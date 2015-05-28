@@ -85,7 +85,7 @@ def EpisodesMenu(url, title):
 
   html = HTML.ElementFromURL(url)
 
-  for item in html.xpath("//div[@id='centerblocks']/table[@class='list']/tr/td/a[contains(text(),'Episode')]"):
+  for item in html.xpath("//div[@id='centerblocks']/table[@class='list']/tbody/tr/td/a[contains(text(),'Episode')]"):
     try:
       # Episode title
       episode = item.xpath("./text()")[0]
@@ -110,11 +110,19 @@ def EpisodesMenu(url, title):
 @route(PREFIX + '/apnitv/playerlinksmenu')
 def PlayerLinksMenu(url, title):
   oc = ObjectContainer(title2=title)
-  
+
+  html = HTML.ElementFromURL(url)
+
+  sites = html.xpath(".//*[@id='centercol']/table/tbody/tr[1]/td/")
+
   # Add the item to the collection
-  oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
-  oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Dailymotion')), title=L('Dailymotion'), thumb=R('icon-dailymotion.png')))
-  
+  for i in range(0,len(sites)):
+    type = sites[i].xpath("./text()")[0]
+    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, type=type, index=i)))
+
+  # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
+  # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Dailymotion')), title=L('Dailymotion'), thumb=R('icon-dailymotion.png')))
+
   # If there are no channels, warn the user
   if len(oc) == 0:
     return ObjectContainer(header=title, message=L('PlayerWarning'))
@@ -124,25 +132,27 @@ def PlayerLinksMenu(url, title):
 ####################################################################################################
 
 @route(PREFIX + '/apnitv/episodelinksmenu')
-def EpisodeLinksMenu(url, title, type):
+def EpisodeLinksMenu(url, title, type, index):
   oc = ObjectContainer(title2=title)
 
   html = HTML.ElementFromURL(url)
-  
-  if type == "Dailymotion":
-    items = GetDailymotion(html)
-  elif type == "Fastplay":
-    items = GetFlashPlayer(html)
-  else:
-    items = None
+
+  items = html.xpath(".//*[@id='centercol']/table[" + str(index) + "]/tbody/tr/td/a")
+
+  # if type == "Dailymotion":
+  #   items = GetDailymotion(html)
+  # elif type == "Fastplay":
+  #   items = GetFlashPlayer(html)
+  # else:
+  #   items = None
 
   for item in items:
     try:
       # Video site
-      videosite = item.xpath("./text()")[0]
+      # videosite = item.xpath("./text()")[0]
       # Video link
       link = item.xpath("./@href")[0]
-      link = URLCheck(link)
+      link = getVideoHost(link)
       # Show date
       date = GetShowDate(videosite)
       # Get video source url and thumb
@@ -172,6 +182,20 @@ def EpisodeLinksMenu(url, title, type):
   return oc
   
 ####################################################################################################
+
+
+def getVideoHost(url):
+
+  html = HTML.ElementFromURL(url)
+  link = html.xpath(".//*[@id='topsource']/a/@href")
+
+  string = HTML.StringFromElement(link)
+
+  match = re.search("http:\/\/[\w]+\.com\/\?host=(?P<host>\w+?)&video=(?P<link>\w+)",string)
+  videohost = match.group("host")
+  link = match.group("link")
+
+
 
 def GetURLSource(url, referer, date=''):
   html = HTML.ElementFromURL(url=url, headers={'Referer': referer})
