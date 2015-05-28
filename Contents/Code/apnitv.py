@@ -118,7 +118,7 @@ def PlayerLinksMenu(url, title):
   # Add the item to the collection
   for i in range(0,len(sites)):
     type = sites[i].xpath("./text()")[0]
-    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, type=type, index=i)))
+    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, type=type, index=i), title=type))
 
   # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
   # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Dailymotion')), title=L('Dailymotion'), thumb=R('icon-dailymotion.png')))
