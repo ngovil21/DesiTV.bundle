@@ -543,7 +543,7 @@ def GetThumb(html):
 ####################################################################################################
 
 @route(PREFIX + '/desirulez/createvideoobject')
-def CreateVideoObject(url, title, thumb, summary='', originally_available_at='', include_container=False):
+def CreateVideoObject(url, title, thumb, summary='', originally_available_at='', include_container=True):
   try:
     originally_available_at = Datetime.ParseDate(originally_available_at).date()
   except:
