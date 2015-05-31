@@ -35,7 +35,7 @@ def ChannelsMenu(url):
 
   return oc
 
-@route(PREFIX + '/desirulez/showsmenu')
+@route(PREFIX + '/desitvbox/showsmenu')
 def ShowsMenu(url, title):
   oc = ObjectContainer(title2=title)
 
@@ -62,5 +62,6 @@ def ShowsMenu(url, title):
 
   return oc
 
+@route(PREFIX + '/desitvbox/episodesmenu')
 def EpisodesMenu:
     return
