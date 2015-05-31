@@ -8,6 +8,11 @@ SITETITLE = L('DesiTvBoxTitle')
 SITEURL = 'http://www.desitvbox.me/'
 SITETHUMB = 'icon-desitvbox.png'
 
+PREFIX = common.PREFIX
+NAME = common.NAME
+ART = common.ART
+ICON = common.ICON
+
 @route(PREFIX + '/desitvbox/channels')
 def ChannelsMenu(url):
   oc = ObjectContainer(title2=SITETITLE)
