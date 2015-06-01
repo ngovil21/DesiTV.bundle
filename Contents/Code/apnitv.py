@@ -89,6 +89,8 @@ def EpisodesMenu(url, title):
     try:
       # Episode title
       episode = item.xpath("./text()")[0]
+      if "written" in episode.lower():
+        continue
       # episode link
       link = item.xpath("./@href")[0]
       if link.startswith("http") == False:
@@ -115,6 +117,7 @@ def PlayerLinksMenu(url, title):
 
   sites = html.xpath(".//*[@id='centercol']/table/tbody/tr[1]/td")
   #Add the item to the collection
+  Log(str(len(sites)))
   for i in range(0,len(sites)):
     type = "Link " + str(i)
     oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, type=type, index=i), title=type))
