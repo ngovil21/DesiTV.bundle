@@ -3,7 +3,7 @@ import common
 import desirulez
 import apnitv
 import desitvforum
-import desitvbox
+#import desitvbox
 
 PREFIX = common.PREFIX
 NAME = common.NAME
@@ -30,7 +30,7 @@ def MainMenu():
   oc.add(DirectoryObject(key=Callback(desirulez.TypeMenu, url=desirulez.SITEURL), title=desirulez.SITETITLE, thumb=R(desirulez.SITETHUMB)))
   oc.add(DirectoryObject(key=Callback(apnitv.ChannelsMenu, url=apnitv.SITEURL), title=apnitv.SITETITLE, thumb=R(apnitv.SITETHUMB)))
   oc.add(DirectoryObject(key=Callback(desitvforum.TypeMenu, url=desitvforum.SITEURL), title=desitvforum.SITETITLE, thumb=R(desitvforum.SITETHUMB)))
-  oc.add(DirectoryObject(key=Callback(desitvbox.ChannelsMenu, url=desitvbox.SITEURL), title=desitvbox.SITETITLE, thumb=R(desitvbox.SITETHUMB)))
+  #oc.add(DirectoryObject(key=Callback(desitvbox.ChannelsMenu, url=desitvbox.SITEURL), title=desitvbox.SITETITLE, thumb=R(desitvbox.SITETHUMB)))
   return oc
 
 ####################################################################################################
