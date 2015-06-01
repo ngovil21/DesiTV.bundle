@@ -4,7 +4,7 @@ import re
 import time
 import datetime
 
-SITETITLE = "Desi TV Box" #L('DesiTvBoxTitle')
+SITETITLE = 'DesiTVBox' #L('DesiTvBoxTitle')
 SITEURL = 'http://www.desitvbox.me/'
 SITETHUMB = 'icon-desitvbox.png'
 
