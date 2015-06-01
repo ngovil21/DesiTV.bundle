@@ -75,13 +75,15 @@ def EpisodesMenu(url, title):
 
   html = HTML.ElementFromURL(url)
 
-  for item in html.xpath("//div[@id='centerblocks']/table[@class='list']/tbody/tr/td/a[contains(text(),'Episode')]"):
+  for item in html.xpath(".//*[@id='left-inside']/div/h2[@class=\"titles\"]/a"):
     try:
       # Episode title
       episode = item.xpath("./text()")[0]
+      if episode.lower().contains("written"):
+          continue
       # episode link
       link = item.xpath("./@href")[0]
-      if link.startswith("http") == False:
+      if not link.startswith("http"):
         link = SITEURL + link
     except:
       continue
