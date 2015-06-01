@@ -52,13 +52,14 @@ def ShowsMenu(url, title):
   channels = html.xpath(".//*[@id='left-inside']/div/table/tbody/tr/td")
 
   for channel in channels:
-      if channel.xpath('//strong[contains(text(),"' + title + '")]'):
+      if channel.xpath('./strong[contains(text(),"' + title + '")]'):
           for show in channel.xpath(".//li/a"):
               name = show.xpath("./text()")[0]
               link = show.xpath("./@href")[0]
 
               # Add the found item to the collection
               oc.add(DirectoryObject(key=Callback(EpisodesMenu, url=link, title=name), title=name))
+          break
 
   # If there are no channels, warn the user
   if len(oc) == 0:
