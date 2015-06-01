@@ -75,7 +75,7 @@ def EpisodesMenu(url, title):
 
   html = HTML.ElementFromURL(url)
 
-  for item in html.xpath(".//*[@id='left-inside']/div/h2[@class=\"titles\"]/a"):
+  for item in html.xpath(".//*[@id='left-inside']/div/h2[@class='titles']/a"):
     try:
       # Episode title
       episode = item.xpath("./text()")[0]
