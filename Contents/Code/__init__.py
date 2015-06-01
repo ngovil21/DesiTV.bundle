@@ -3,7 +3,7 @@ import common
 import desirulez
 import apnitv
 import desitvforum
-#import desitvbox
+import desitvbox
 
 PREFIX = common.PREFIX
 NAME = common.NAME
