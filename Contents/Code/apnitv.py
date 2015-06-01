@@ -115,12 +115,12 @@ def PlayerLinksMenu(url, title):
 
   html = HTML.ElementFromURL(url)
 
-  sites = html.xpath(".//*[@id='centercol']/table/tbody/tr[1]/td")
+  sites = html.xpath(".//*[@id='centerblocks']/table/tbody/tr[1]/td")
   #Add the item to the collection
   Log(str(len(sites)))
   for i in range(0,len(sites)):
-    type = "Link " + str(i)
-    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, type=type, index=i), title=type))
+    title = "Link " + str(i)
+    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, index=i), title=type))
 
   #oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
   #oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Dailymotion')), title=L('Dailymotion'), thumb=R('icon-dailymotion.png')))
@@ -134,7 +134,7 @@ def PlayerLinksMenu(url, title):
 ####################################################################################################
 
 @route(PREFIX + '/apnitv/episodelinksmenu')
-def EpisodeLinksMenu(url, title, type, index):
+def EpisodeLinksMenu(url, title, index):
   oc = ObjectContainer(title2=title)
 
   html = HTML.ElementFromURL(url)
