@@ -52,7 +52,7 @@ def ShowsMenu(url, title):
   channels = html.xpath(".//*[@id='left-inside']/div/table/tbody/tr/td")
 
   for channel in channels:
-      if channel.xpath("//strong[contains(text(),"+title+")]"):
+      if channel.xpath('//strong[contains(text(),"' + title + '")]'):
           for show in channel.xpath(".//li/a"):
               name = show.xpath("./text()")[0]
               link = show.xpath("./@href")[0]
