@@ -49,21 +49,16 @@ def ShowsMenu(url, title):
   oc = ObjectContainer(title2=title)
 
   html = HTML.ElementFromURL(url)
+  channels = html.xpath(".//*[@id='left-inside']/div/table/tbody/tr/td")
 
-  for item in html.xpath("//div[@id='centerblocks']/div[@class='serial']/strong/a"):
-    try:
-      # Show title
-      show = item.xpath("./text()")[0]
+  for channel in channels:
+      if channel.xpath("/strong[contains(text(),"+title+")]"):
+          for show in channel.xpath("//li/a"):
+              name = show.xpath("./text()")[0]
+              link = show.xpath("./@href")[0]
 
-      # Show link
-      link = item.xpath("./@href")[0]
-      if link.startswith("http") == False:
-        link = SITEURL + link
-    except:
-      continue
-
-    # Add the found item to the collection
-    oc.add(DirectoryObject(key=Callback(EpisodesMenu, url=link, title=show), title=show))
+              # Add the found item to the collection
+              oc.add(DirectoryObject(key=Callback(EpisodesMenu, url=link, title=name), title=name))
 
   # If there are no channels, warn the user
   if len(oc) == 0:
