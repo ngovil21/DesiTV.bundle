@@ -105,15 +105,11 @@ def PlayerLinksMenu(url, title):
 
   html = HTML.ElementFromURL(url)
 
-  sites = html.xpath(".//*[@id='centercol']/table/tbody/tr[1]/td/")
-
+  sites = html.xpath(".//*[@id='left-inside']/div/center/p/strong/span")
   # Add the item to the collection
-  for i in range(0,len(sites)):
-    type = sites[i].xpath("./text()")[0]
-    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, type=type, index=i), title=type))
-
-  # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
-  # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Dailymotion')), title=L('Dailymotion'), thumb=R('icon-dailymotion.png')))
+  for item in sites:
+    type = item.xpath("./text()")[0]
+    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type), title=type))
 
   # If there are no channels, warn the user
   if len(oc) == 0:
