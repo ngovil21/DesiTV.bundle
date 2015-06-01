@@ -85,7 +85,7 @@ def EpisodesMenu(url, title):
 
   html = HTML.ElementFromURL(url)
 
-  for item in html.xpath("//div[@id='centerblocks']/table[@class='list']/tbody/tr/td/a[contains(text(),'Episode')]"):
+  for item in html.xpath(".//div[contains(@class,'main')]/div/p/a[contains(text(),'Episode')]"):
     try:
       # Episode title
       episode = item.xpath("./text()")[0]
@@ -114,14 +114,13 @@ def PlayerLinksMenu(url, title):
   html = HTML.ElementFromURL(url)
 
   sites = html.xpath(".//*[@id='centercol']/table/tbody/tr[1]/td/")
-
-  # Add the item to the collection
+  #Add the item to the collection
   for i in range(0,len(sites)):
-    type = sites[i].xpath("./text()")[0]
+    type = "Link " + str(i)
     oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, type=type, index=i), title=type))
 
-  # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
-  # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Dailymotion')), title=L('Dailymotion'), thumb=R('icon-dailymotion.png')))
+  #oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
+  #oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Dailymotion')), title=L('Dailymotion'), thumb=R('icon-dailymotion.png')))
 
   # If there are no channels, warn the user
   if len(oc) == 0:
@@ -139,20 +138,20 @@ def EpisodeLinksMenu(url, title, type, index):
 
   items = html.xpath(".//*[@id='centercol']/table[" + str(index) + "]/tbody/tr/td/a")
 
-  # if type == "Dailymotion":
-  #   items = GetDailymotion(html)
-  # elif type == "Fastplay":
-  #   items = GetFlashPlayer(html)
-  # else:
-  #   items = None
+  if type == "Dailymotion":
+     items = GetDailymotion(html)
+  elif type == "Fastplay":
+     items = GetFlashPlayer(html)
+  else:
+     items = None
 
   for item in items:
     try:
       # Video site
-      # videosite = item.xpath("./text()")[0]
+      videosite = item.xpath("./text()")[0]
       # Video link
       link = item.xpath("./@href")[0]
-      link = getVideoHost(link)
+      #link = getVideoHost(link)
       # Show date
       date = GetShowDate(videosite)
       # Get video source url and thumb
@@ -166,6 +165,7 @@ def EpisodeLinksMenu(url, title, type, index):
       oc.add(VideoClipObject(
         url = link, 
         title = videosite, 
+        thumb = Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
         thumb = Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
         originally_available_at = Datetime.ParseDate(date).date()))
     elif link.find('playwire') != -1:
