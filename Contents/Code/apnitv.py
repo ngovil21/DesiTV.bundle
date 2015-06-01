@@ -115,13 +115,14 @@ def PlayerLinksMenu(url, title):
 
   html = HTML.ElementFromURL(url)
 
-  sites = html.xpath("//div[@id='centerblocks']/table/tbody/tr[1]/td")
+  sites = html.xpath("//div[@id='centerblocks']/table[@class='list']")
   #Add the item to the collection
   Log(str(len(sites)))
   i=1
   for item in sites:
-    title = "Link " + str(i)
-    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, index=i), title=type))
+    type = "Link " + str(i)
+    Log(type)
+    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, index=i), title=type))
     i+=1
 
   #oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
