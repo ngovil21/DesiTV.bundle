@@ -79,7 +79,7 @@ def EpisodesMenu(url, title):
     try:
       # Episode title
       episode = item.xpath("./text()")[0]
-      if episode.lower().contains("written"):
+      if "written" in episode.lower():
           continue
       # episode link
       link = item.xpath("./@href")[0]
