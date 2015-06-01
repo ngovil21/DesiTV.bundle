@@ -113,7 +113,7 @@ def PlayerLinksMenu(url, title):
 
   html = HTML.ElementFromURL(url)
 
-  sites = html.xpath(".//*[@id='centercol']/table/tbody/tr[1]/td/")
+  sites = html.xpath(".//*[@id='centercol']/table/tbody/tr[1]/td")
   #Add the item to the collection
   for i in range(0,len(sites)):
     type = "Link " + str(i)
