@@ -1,17 +1,19 @@
+
 import common
 import urlparse
 import re
 import time
-import datetime
 
-SITETITLE = 'DesiTVBox' #L('DesiTvBoxTitle')
+SITETITLE = L('ApniTvTitle')
 SITEURL = 'http://www.desitvbox.me/'
-SITETHUMB = 'icon-desitvbox.png'
+SITETHUMB = 'icon-apnitv.png'
 
 PREFIX = common.PREFIX
 NAME = common.NAME
 ART = common.ART
 ICON = common.ICON
+
+####################################################################################################
 
 @route(PREFIX + '/desitvbox/channels')
 def ChannelsMenu(url):
@@ -40,19 +42,21 @@ def ChannelsMenu(url):
 
   return oc
 
+####################################################################################################
+
 @route(PREFIX + '/desitvbox/showsmenu')
 def ShowsMenu(url, title):
   oc = ObjectContainer(title2=title)
 
   html = HTML.ElementFromURL(url)
 
-  for item in html.xpath("//div[@class='forumbitBody']//div[@class='foruminfo']"):
+  for item in html.xpath("//div[@id='centerblocks']/div[@class='serial']/strong/a"):
     try:
       # Show title
-      show = item.xpath("./div/div/div/h2/a/text()")[0]
+      show = item.xpath("./text()")[0]
 
       # Show link
-      link = item.xpath("./div/div/div/h2/a/@href")[0]
+      link = item.xpath("./@href")[0]
       if link.startswith("http") == False:
         link = SITEURL + link
     except:
@@ -67,6 +71,229 @@ def ShowsMenu(url, title):
 
   return oc
 
+####################################################################################################
+
 @route(PREFIX + '/desitvbox/episodesmenu')
-def EpisodesMenu:
-    return
+def EpisodesMenu(url, title):
+  oc = ObjectContainer(title2=title)
+
+  html = HTML.ElementFromURL(url)
+
+  for item in html.xpath("//div[@id='centerblocks']/table[@class='list']/tbody/tr/td/a[contains(text(),'Episode')]"):
+    try:
+      # Episode title
+      episode = item.xpath("./text()")[0]
+      # episode link
+      link = item.xpath("./@href")[0]
+      if link.startswith("http") == False:
+        link = SITEURL + link
+    except:
+      continue
+
+    # Add the found item to the collection
+    oc.add(PopupDirectoryObject(key=Callback(PlayerLinksMenu, url=link, title=episode), title=episode))
+
+  # If there are no channels, warn the user
+  if len(oc) == 0:
+    return ObjectContainer(header=title, message=L('EpisodeWarning'))
+
+  return oc
+
+####################################################################################################
+
+@route(PREFIX + '/desitvbox/playerlinksmenu')
+def PlayerLinksMenu(url, title):
+  oc = ObjectContainer(title2=title)
+
+  html = HTML.ElementFromURL(url)
+
+  sites = html.xpath(".//*[@id='centercol']/table/tbody/tr[1]/td/")
+
+  # Add the item to the collection
+  for i in range(0,len(sites)):
+    type = sites[i].xpath("./text()")[0]
+    oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, type=type, index=i), title=type))
+
+  # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Fastplay')), title=L('Fastplay'), thumb=R('icon-flashplayer.png')))
+  # oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=title, type=L('Dailymotion')), title=L('Dailymotion'), thumb=R('icon-dailymotion.png')))
+
+  # If there are no channels, warn the user
+  if len(oc) == 0:
+    return ObjectContainer(header=title, message=L('PlayerWarning'))
+
+  return oc
+
+####################################################################################################
+
+@route(PREFIX + '/desitvbox/episodelinksmenu')
+def EpisodeLinksMenu(url, title, type, index):
+  oc = ObjectContainer(title2=title)
+
+  html = HTML.ElementFromURL(url)
+
+  items = html.xpath(".//*[@id='centercol']/table[" + str(index) + "]/tbody/tr/td/a")
+
+  # if type == "Dailymotion":
+  #   items = GetDailymotion(html)
+  # elif type == "Fastplay":
+  #   items = GetFlashPlayer(html)
+  # else:
+  #   items = None
+
+  for item in items:
+    try:
+      # Video site
+      # videosite = item.xpath("./text()")[0]
+      # Video link
+      link = item.xpath("./@href")[0]
+      link = getVideoHost(link)
+      # Show date
+      date = GetShowDate(videosite)
+      # Get video source url and thumb
+      link = GetURLSource(link,url,date)
+    except:
+      continue
+
+    # Add the found item to the collection
+    if link.find('dailymotion') != -1:
+      #Log ('Dailymotion Link: ' + link)
+      oc.add(VideoClipObject(
+        url = link,
+        title = videosite,
+        thumb = Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
+        originally_available_at = Datetime.ParseDate(date).date()))
+    elif link.find('playwire') != -1:
+      oc.add(CreateVideoObject(
+        url = link,
+        title = videosite,
+        thumb = Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
+        originally_available_at = Datetime.ParseDate(date).date()))
+
+  # If there are no channels, warn the user
+  if len(oc) == 0:
+    return ObjectContainer(header=title, message=L('SourceWarning'))
+
+  return oc
+
+####################################################################################################
+
+
+def getVideoHost(url):
+
+  html = HTML.ElementFromURL(url)
+  link = html.xpath(".//*[@id='topsource']/a/@href")
+
+  string = HTML.StringFromElement(link)
+
+  match = re.search("http:\/\/[\w]+\.com\/\?host=(?P<host>\w+?)&video=(?P<link>\w+)",string)
+  videohost = match.group("host")
+  link = match.group("link")
+
+
+
+def GetURLSource(url, referer, date=''):
+  html = HTML.ElementFromURL(url=url, headers={'Referer': referer})
+  string = HTML.StringFromElement(html)
+
+  if string.find('dailymotion') != -1:
+    url = html.xpath("//div[@id='topsource']/a/@href")[0]
+  elif string.find('fastplay') != -1:
+    url = html.xpath("//div[@id='topsource']/a/@href")[0]
+
+    html = HTML.ElementFromURL(url=url, headers={'Referer': url})
+    string = HTML.StringFromElement(html)
+
+    if string.find('playwire') != -1:
+      url = 'http://cdn.playwire.com/' + html.xpath("//script/@data-publisher-id")[0] + '/video-' + date + '-' + html.xpath("//script/@data-video-id")[0] + '.mp4'
+    elif string.find('dailymotion') != -1:
+      url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
+      if url.startswith("http") == False:
+        url = url.lstrip('htp:/')
+        url = 'http://' + url
+
+  return url
+
+####################################################################################################
+
+def GetDailymotion(html):
+  items = html.xpath("//table[@class='list']/tr[@class='heading' and contains(td/text(),'Dailymotion')]/following-sibling::tr/td/a")
+  return items
+
+####################################################################################################
+
+def GetFlashPlayer(html):
+  items = html.xpath("//table[@class='list']/tr[@class='heading' and contains(td/text(),'Fastplay')]/following-sibling::tr/td/a")
+  return items
+
+####################################################################################################
+
+def GetShowDate(title):
+  # find the date in the show title
+  match = re.search(r'\w+\s\d{1,2}[thsrdn]+\s\d{4}', title)
+  #Log ('match: ' + match.group())
+  # remove the prefix from date
+  match = re.sub(r'(st|nd|rd|th)', "", match.group())
+  if match.find('Augu') != -1:
+    match = match.replace("Augu", "August", 1)
+  # strip date to struct
+  date = time.strptime(match, '%B %d %Y')
+  # convert date
+  date = time.strftime('%Y%m%d', date)
+  #Log ('Date: ' + date)
+  return date
+
+####################################################################################################
+
+def URLCheck(url):
+  url = url.rstrip('\r\n/') + '/'
+  if url.startswith("http") == False:
+    url = url.lstrip('htp:/')
+    url = 'http://' + url
+  return url
+
+####################################################################################################
+
+@route(PREFIX + '/desitvbox/createvideoobject')
+def CreateVideoObject(url, title, thumb, originally_available_at, include_container=False):
+  try:
+    originally_available_at = Datetime.ParseDate(originally_available_at).date()
+  except:
+    originally_available_at = None
+
+  container = Container.MP4
+  video_codec = VideoCodec.H264
+  audio_codec = AudioCodec.AAC
+  audio_channels = 2
+
+  video_object = VideoClipObject(
+    key = Callback(
+      CreateVideoObject,
+      url=url,
+      title=title,
+      thumb=thumb,
+      originally_available_at=originally_available_at,
+      include_container=True
+    ),
+    rating_key = url,
+    title = title,
+    thumb=thumb,
+    originally_available_at=originally_available_at,
+    items = [
+      MediaObject(
+        parts = [
+          PartObject(key=url)
+        ],
+        container = container,
+        video_codec = video_codec,
+        audio_codec = audio_codec,
+        audio_channels = audio_channels
+      )
+    ]
+  )
+
+  if include_container:
+    return ObjectContainer(objects=[video_object])
+  else:
+    return video_object
+
+####################################################################################################
