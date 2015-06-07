@@ -45,7 +45,7 @@ def ShowcaseMenu(url,title):
     for item in html.xpath("//div[@id='movie-showcase-slides']/div"):
         #try:
         link = item.xpath(".//a[@class='movie-title']")
-        url = item.xpath("./@href")[0].lstrip(' .')
+        url = link.xpath("./@href")[0].lstrip(' .')
         if not url.startswith("http://"):
             link = SITEURL + link
         image = None
