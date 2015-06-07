@@ -87,7 +87,9 @@ def SearchResultsMenu(language, query):
     for item in html.xpath("//div[@id='non-realtime-search']/div[@class='search-category-wrapper-left']/div//li/a"):
         try:
             title = item.xpath("./text()")[0]
-            link = item.xpath("./@href")[0]
+            link = item.xpath("./@href")[0].lstrip(" .")
+            if not link.startswith("http:"):
+                link = SITEURL + link
         except:
             continue
         oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title))
