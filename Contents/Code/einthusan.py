@@ -43,23 +43,23 @@ def ShowcaseMenu(url,title):
     html = HTML.ElementFromURL(url)
 
     for item in html.xpath("//div[@id='movie-showcase-slides']/div"):
-        try:
-            link = item.xpath(".//a[@class='movie-title']")
-            url = item.xpath("./@href")[0].lstrip(' .')
-            if not url.startswith("http://"):
-                link = SITEURL + link
-            image = None
-            x_image = item.xpath("//img/@src")
-            if x_image:
-                image = x_image[0].lstrip(" .")
-                if not image.startswith("http:"):
-                    image = SITEURL + image
-                thumb = Resource.ContentsOfURLWithFallback(url=image, fallback=R(ICON))
-            title = item.xpath("./text()")[0].rstrip(' -')
-        except:
-            continue
+        #try:
+        link = item.xpath(".//a[@class='movie-title']")
+        url = item.xpath("./@href")[0].lstrip(' .')
+        if not url.startswith("http://"):
+            link = SITEURL + link
+        image = None
+        x_image = item.xpath("//img/@src")
+        if x_image:
+            image = x_image[0].lstrip(" .")
+            if not image.startswith("http:"):
+                image = SITEURL + image
+            thumb = Resource.ContentsOfURLWithFallback(url=image, fallback=R(ICON))
+        title = item.xpath("./text()")[0].rstrip(' -')
+        # except:
+        #     continue
 
-        oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title,thumb=image))
+        oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title, thumb=image))
 
     if len(oc) == 0:
         return ObjectContainer(header=title, message=L('ShowWarning'))
