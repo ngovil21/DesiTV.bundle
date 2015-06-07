@@ -55,3 +55,4 @@ def ShowcaseMenu(url,title):
 
 @route(PREFIX + '/einthusan/movie')
 def PlayMovie(url,title):
+    return
