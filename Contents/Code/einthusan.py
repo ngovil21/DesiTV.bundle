@@ -31,7 +31,7 @@ def MainMenu(url,title):
     oc = ObjectContainer(title2=title)
 
     oc.add(DirectoryObject(key=Callback(ShowcaseMenu, url=url, title='Showcase'), title='Showcase'))
-
+    oc.add(DirectoryObject(key=Callback(SearchInputMenu, url=url, title='Search', language=title), title='Search'))
     return oc
 
 @route(PREFIX + '/einthusan/showcase')
@@ -40,14 +40,54 @@ def ShowcaseMenu(url,title):
     oc = ObjectContainer(title2=title)
     html = HTML.ElementFromURL(url)
 
-    for item in html.xpath("//div[@id='movie-showcase-slides']//a[@class='movie-title']"):
+    for item in html.xpath("//div[@id='movie-showcase-slides']/div"):
         try:
-            link = item.xpath("./@href")[0].lstrip(' .')
-            link  = SITEURL + link
+            link = item.xpath(".//a[@class='movie-title']")
+            url = item.xpath("./@href")[0].lstrip(' .')
+            if not url.startswith("http://"):
+                link = SITEURL + link
+            image = None
+            x_image = item.xpath("//img/@src")
+            if x_image:
+                image = x_image[0].lstrip(" .")
+                if not image.startswith("http:"):
+                    image = SITEURL + image
+                thumb = Resource.ContentsOfURLWithFallback(url=image, fallback=R(ICON))
             title = item.xpath("./text()")[0].rstrip(' -')
         except:
             continue
 
+        oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title,thumb=image))
+
+    if len(oc) == 0:
+        return ObjectContainer(header=title, message=L('ShowWarning'))
+
+    return oc
+
+@route(PREFIX + '/einthusan/searchinput')
+def SearchInputMenu(title,language):
+
+    oc = ObjectContainer(title2=title)
+
+    oc.add(InputDirectoryObject(key=SearchResultsMenu(language=language)), title=title,prompt="Enter the name of the Movie to search:")
+    return oc
+
+@route(PREFIX + '/einthusan/searchresults')
+def SearchResultsMenu(query, language):
+
+    oc = ObjectContainer(title2="Search")
+
+    query = String.Quote(query, usePlus=True)
+    url = SITEURL + "search/?search_query=" + query + "&lang=" + language.lower()
+    Log(url)
+    html = HTML.ElementFromURL(url)
+
+    for item in html.xpath("//div[@id='non-realtime-search']/div[@class='search-category-wrapper-left']/div//li/a"):
+        try:
+            title = title.xpath("./text()")[0]
+            link = title.xpath("./@href")[0]
+        except:
+            continue
         oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title))
 
     if len(oc) == 0:
@@ -74,7 +114,7 @@ def PlayMovie(url,title):
     return oc
 
 @route(PREFIX + '/einthusan/createvideoobject')
-def CreateVideoObject(url, title, thumb, originally_available_at, include_container=False):
+def CreateVideoObject(url, title, thumb, originally_available_at=None,summary=None, include_container=False):
   try:
     originally_available_at = Datetime.ParseDate(originally_available_at).date()
   except:
