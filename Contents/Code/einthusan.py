@@ -4,7 +4,7 @@ import re
 import time
 
 SITETITLE = 'Einthusan'
-SITEURL = 'http://http://einthusan.com/'
+SITEURL = 'http://einthusan.com/'
 SITETHUMB = 'icon-apnitv.png'
 
 PREFIX = common.PREFIX
