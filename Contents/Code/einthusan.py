@@ -179,7 +179,9 @@ def PlayMovie(url,title):
 
     source = HTML.StringFromElement(html)
 
-    thumb = html.xpath("//div[@class='video-object-wrapper']/a//img/@src")[0]
+    thumb = html.xpath("//div[@class='video-object-wrapper']/a//img/@src")[0].lstrip(" .")
+    if not thumb.startswith("http:"):
+        thumb = SITEURL + thumb
 
     match = re.compile("'file': '(.+?)'").findall(source)
     if len(match) == 0:
