@@ -33,7 +33,7 @@ def MainMenu(url,title):
     oc.add(DirectoryObject(key=Callback(ShowcaseMenu, url=url, title='Showcase'), title='Showcase'))
     oc.add(InputDirectoryObject(key=Callback(SearchResultsMenu, language=title), title='Search',
                                 prompt="Enter the name of the Movie to search:"))
-   # oc.add(DirectoryObject(key=Callback(SearchInputMenu, title='Search', language=title), title='Search'))
+    oc.add(DirectoryObject(key=Callback(SearchInputMenu, title='Search', language=title), title='Search'))
     return oc
 
 @route(PREFIX + '/einthusan/showcase')
@@ -86,8 +86,8 @@ def SearchResultsMenu(language, query):
 
     for item in html.xpath("//div[@id='non-realtime-search']/div[@class='search-category-wrapper-left']/div//li/a"):
         try:
-            title = title.xpath("./text()")[0]
-            link = title.xpath("./@href")[0]
+            title = item.xpath("./text()")[0]
+            link = item.xpath("./@href")[0]
         except:
             continue
         oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title))
