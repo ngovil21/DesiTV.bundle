@@ -75,7 +75,7 @@ def SearchInputMenu(title, language):
     return oc
 
 @route(PREFIX + '/einthusan/searchresults')
-def SearchResultsMenu(language="hindi", query):
+def SearchResultsMenu(language, query):
 
     oc = ObjectContainer(title2="Search")
 
