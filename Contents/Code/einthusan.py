@@ -33,7 +33,7 @@ def MainMenu(url,title):
     oc.add(DirectoryObject(key=Callback(ShowcaseMenu, url=url, title='Showcase'), title='Showcase'))
     oc.add(InputDirectoryObject(key=Callback(SearchResultsMenu, language=title), title='Search',
                                 prompt="Enter the name of the Movie to search:"))
-    oc.add(DirectoryObject(key=Callback(SearchInputMenu, title='Search', language=title), title='Search'))
+    #oc.add(DirectoryObject(key=Callback(SearchInputMenu, title='Search', language=title), title='Search'))
     return oc
 
 @route(PREFIX + '/einthusan/showcase')
