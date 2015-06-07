@@ -28,7 +28,7 @@ def LanguagesMenu(url):
 @route(PREFIX + '/einthusan/main')
 def MainMenu(url,title):
 
-    oc = ObjectContainer(title2=SITETITLE)
+    oc = ObjectContainer(title2=title)
 
     oc.add(DirectoryObject(key=Callback(ShowcaseMenu, url=url, title='Showcase'), title='Showcase'))
 
@@ -37,8 +37,8 @@ def MainMenu(url,title):
 @route(PREFIX + '/einthusan/showcase')
 def ShowcaseMenu(url,title):
 
-    oc = ObjectContainer(title2=SITETITLE)
-    html = html = HTML.ElementFromURL(url)
+    oc = ObjectContainer(title2=title)
+    html = HTML.ElementFromURL(url)
 
     for item in html.xpath("//div[@id='movie-showcase-slides']//a[@class='movie-title']"):
         try:
@@ -56,4 +56,61 @@ def ShowcaseMenu(url,title):
 
 @route(PREFIX + '/einthusan/movie')
 def PlayMovie(url,title):
-    return
+
+    oc = ObjectContainer(title2=title)
+    html = HTML.ElementFromURL(url)
+
+    source = HTML.StringFromElement(html)
+
+    thumb = html.xpath("//div[@class='video-object-thumb']//img/@src")[0]
+
+    match = re.compile("'file': '(.+?)'").findall(source)
+    if len(match) == 0:
+        return ObjectContainer(header=title, message=L('ShowWarning'))
+
+    oc.add(CreateVideoObject(match[0], title, thumb, None, False))
+
+    return oc
+
+@route(PREFIX + '/einthusan/createvideoobject')
+def CreateVideoObject(url, title, thumb, originally_available_at, include_container=False):
+  try:
+    originally_available_at = Datetime.ParseDate(originally_available_at).date()
+  except:
+    originally_available_at = None
+
+  container = Container.MP4
+  video_codec = VideoCodec.H264
+  audio_codec = AudioCodec.AAC
+  audio_channels = 2
+
+  video_object = VideoClipObject(
+    key = Callback(
+      CreateVideoObject,
+      url=url,
+      title=title,
+      thumb=thumb,
+      originally_available_at=originally_available_at,
+      include_container=True
+    ),
+    rating_key = url,
+    title = title,
+    thumb=thumb,
+    originally_available_at=originally_available_at,
+    items = [
+      MediaObject(
+        parts = [
+          PartObject(key=url)
+        ],
+        container = container,
+        video_codec = video_codec,
+        audio_codec = audio_codec,
+        audio_channels = audio_channels
+      )
+    ]
+  )
+
+  if include_container:
+    return ObjectContainer(objects=[video_object])
+  else:
+    return video_object
