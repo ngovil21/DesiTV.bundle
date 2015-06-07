@@ -124,7 +124,7 @@ def MovieListMenu(url, title):
             if not image.startswith("http:"):
                 image = SITEURL + image
             thumb = Resource.ContentsOfURLWithFallback(url=image, fallback=R(ICON))
-        x_link = item.xpath("/div/div[@class='movie-title-wrapper']//a")[0]
+        x_link = item.xpath("./div/div[@class='movie-title-wrapper']//a")[0]
         link = x_link.xpath("./@href")[0].lstrip(" .")
         if not link.startswith("http://"):
             link = SITEURL + link
