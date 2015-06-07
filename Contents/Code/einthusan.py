@@ -31,7 +31,7 @@ def MainMenu(url,title):
     oc = ObjectContainer(title2=title)
 
     oc.add(DirectoryObject(key=Callback(ShowcaseMenu, url=url, title='Showcase'), title='Showcase'))
-    oc.add(DirectoryObject(key=Callback(SearchInputMenu, url=url, title='Search', language=title), title='Search'))
+    oc.add(DirectoryObject(key=Callback(SearchInputMenu, title='Search', language=title), title='Search'))
     return oc
 
 @route(PREFIX + '/einthusan/showcase')
