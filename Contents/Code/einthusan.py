@@ -82,6 +82,8 @@ def HDMenu(url,title, language):
 def BlurayMenu(url,title,language):
     oc = ObjectContainer(title2=title)
 
+    url = "http://einthusan.com/bluray/index.php?lang=" + language
+
     oc.add(DirectoryObject(key=Callback(YearMenu, url=url, title="By Year"), title="By Year"))
 
     return oc
@@ -89,16 +91,16 @@ def BlurayMenu(url,title,language):
 @route(PREFIX + '/einthusan/Year')
 def YearMenu(url,title):
     oc = ObjectContainer(title2=title)
-    url = url + "&organize=Year"
+    yurl = url + "&organize=Year"
 
-    html = HTML.ElementFromURL(url)
+    html = HTML.ElementFromURL(yurl)
 
     for item in html.xpath("//div[@id='video-organizer-wrapper']/div[@class='video-organizer-element-wrapper']/a"):
         try:
             year = item.xpath("./text()")[0]
             link = item.xpath("./@href")[0].lstrip(" .")
             if not link.startswith("http://"):
-                link = SITEURL + link
+                link = url + link
         except:
             continue
         oc.add(DirectoryObject(key=Callback(MovieListMenu, url=link, title=year), title=year, thumb=None))
