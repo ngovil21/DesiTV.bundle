@@ -31,8 +31,9 @@ def MainMenu(url,title):
     oc = ObjectContainer(title2=title)
 
     oc.add(DirectoryObject(key=Callback(ShowcaseMenu, url=url, title='Showcase'), title='Showcase'))
-    oc.add(InputDirectoryObject(key=Callback(SearchResultsMenu, language=title), title='Search',
-                                prompt="Enter the name of the Movie to search:"))
+    oc.add(DirectoryObject(key=Callback(HDMenu, url=url, title='HD Movies', language=title.lower())), title='HD Movies))
+    oc.add(DirectoryObject(key=Callback(BlurayMenu, url=url, title='Blu-ray Movies', language=title.lower())), title='Blu-ray Movies))
+    oc.add(InputDirectoryObject(key=Callback(SearchResultsMenu, language=title.lower())), title='Search', prompt="Enter the name of the Movie to search:"))
     #oc.add(DirectoryObject(key=Callback(SearchInputMenu, title='Search', language=title), title='Search'))
     return oc
 
@@ -48,7 +49,7 @@ def ShowcaseMenu(url,title):
         url = link.xpath("./@href")[0].lstrip(' .')
         if not url.startswith("http://"):
             url = SITEURL + url
-        image = None
+        thumb = None
         x_image = item.xpath("//img/@src")
         if x_image:
             image = x_image[0].lstrip(" .")
@@ -59,12 +60,81 @@ def ShowcaseMenu(url,title):
         # except:
         #     continue
 
-        oc.add(DirectoryObject(key=Callback(PlayMovie, url=url, title=title), title=title, thumb=image))
+        oc.add(DirectoryObject(key=Callback(PlayMovie, url=url, title=title), title=title, thumb=thumb))
 
     if len(oc) == 0:
         return ObjectContainer(header=title, message=L('ShowWarning'))
 
     return oc
+
+@route(PREFIX + '/einthusan/HdMovies')
+def HDMenu(url,title, language):
+    oc = ObjectContainer(title2=title)
+
+    url = "http://einthusan.com/movies/index.php?lang=" + language
+
+    oc.add(DirectoryObject(key=Callback(YearMenu, url=url, title="By Year"), title="By Year"))
+
+    return oc
+
+
+@route(PREFIX + '/einthusan/BlurayMovies')
+def BlurayMenu(url,title,language):
+    oc = ObjectContainer(title2=title)
+
+    oc.add(DirectoryObject(key=Callback(YearMenu, url=url, title="By Year"), title="By Year"))
+
+    return oc
+
+@route(PREFIX + '/einthusan/Year')
+def YearMenu(url,title):
+    oc = ObjectContainer(title2=title)
+    url = url + "&organize=Year"
+
+    html = HTML.ElementFromURL(url)
+
+    for item in html.xpath("//div[@id='video-organizer-wrapper']/div[@class='video-organizer-element-wrapper']/a"):
+        try:
+            year = item.xpath("./text()")[0]
+            link = item.xpath("./@href")[0].lstrip(" .")
+            if not link.startswith("http://"):
+                link = SITEURL + link
+        except:
+            continue
+        oc.add(DirectoryObject(key=Callback(MovieListMenu, url=link, title=year), title=year, thumb=None))
+
+    if len(oc) == 0:
+        return ObjectContainer(header=title, message=L('ShowWarning'))
+
+    return oc
+
+@route(PREFIX + '/einthusan/MovieList')
+def MovieListMenu(url, title):
+    oc = ObjectContainer(title2=title)
+
+    html = HTML.ElementFromURL(url)
+
+    for item in html.xpath("//div[@id='content']/div[@class='video-listing-wrapper']/div/div"):
+        x_image = item.xpath("./div/a/img")[0]
+        thumb=None
+        if x_image:
+            image = x_image.xpath("./@src")[0].lstrip(". ")
+            if not image.startswith("http:"):
+                image = SITEURL + image
+            thumb = Resource.ContentsOfURLWithFallback(url=image, fallback=R(ICON))
+        x_link = item.xpath("/div/div[@class='movie-title-wrapper']//a")[0]
+        link = x_link.xpath("./@href")[0].lstrip(" .")
+        if not link.startswith("http://"):
+            link = SITEURL + link
+        title = x_link.xpath("./text()")[0]
+        oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title, thumb=thumb))
+
+
+    if len(oc) == 0:
+        return ObjectContainer(header=title, message=L('ShowWarning'))
+
+    return oc
+
 
 @route(PREFIX + '/einthusan/searchinput')
 def SearchInputMenu(title, language):
