@@ -65,15 +65,15 @@ def ShowcaseMenu(url,title):
     return oc
 
 @route(PREFIX + '/einthusan/searchinput')
-def SearchInputMenu(title,language):
+def SearchInputMenu(title, language):
 
     oc = ObjectContainer(title2=title)
 
-    oc.add(InputDirectoryObject(key=SearchResultsMenu(language=language)), title=title,prompt="Enter the name of the Movie to search:")
+    oc.add(InputDirectoryObject(key=Callback(SearchResultsMenu, language=language), title=title,prompt="Enter the name of the Movie to search:"))
     return oc
 
 @route(PREFIX + '/einthusan/searchresults')
-def SearchResultsMenu(query, language):
+def SearchResultsMenu(language="hindi", query=''):
 
     oc = ObjectContainer(title2="Search")
 
