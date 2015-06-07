@@ -55,7 +55,7 @@ def ShowcaseMenu(url,title):
             if not image.startswith("http:"):
                 image = SITEURL + image
             thumb = Resource.ContentsOfURLWithFallback(url=image, fallback=R(ICON))
-        title = item.xpath("./text()")[0].rstrip(' -')
+        title = link.xpath("./text()")[0].rstrip(' -')
         # except:
         #     continue
 
