@@ -14,10 +14,11 @@ ICON = common.ICON
 
 @route(PREFIX + '/einthusan/languages')
 def LanguagesMenu(url):
+
     oc = ObjectContainer(title2=SITETITLE)
 
     oc.add(DirectoryObject(key=Callback(MainMenu, url=url + 'index.php?lang=hindi', title='Hindi'), title='Hindi'))
-    oc.add(DirectoryObject(key=Callback(MainMenu, url=url + 'index.php?lang=tamil', title='Tamil'), title='Hindi'))
+    oc.add(DirectoryObject(key=Callback(MainMenu, url=url + 'index.php?lang=tamil', title='Tamil'), title='Tamil'))
     oc.add(DirectoryObject(key=Callback(MainMenu, url=url + 'index.php?lang=telegu', title='Telegu'), title='Telegu'))
     oc.add(DirectoryObject(key=Callback(MainMenu, url=url + 'index.php?lang=malayalam', title='Malayalam'), title='Malayalam'))
 
@@ -27,7 +28,7 @@ def LanguagesMenu(url):
 @route(PREFIX + '/einthusan/main')
 def MainMenu(url,title):
 
-    oc = ObjectContainter(title2=title)
+    oc = ObjectContainer(title2=SITETITLE)
 
     oc.add(DirectoryObject(key=Callback(ShowcaseMenu, url=url, title='Showcase'), title='Showcase'))
 
@@ -36,7 +37,7 @@ def MainMenu(url,title):
 @route(PREFIX + '/einthusan/showcase')
 def ShowcaseMenu(url,title):
 
-    oc = ObjectContainter(title2=title)
+    oc = ObjectContainer(title2=SITETITLE)
     html = html = HTML.ElementFromURL(url)
 
     for item in html.xpath("//div[@id='movie-showcase-slides']//a[@class='movie-title']"):
