@@ -47,7 +47,7 @@ def ShowcaseMenu(url,title):
         link = item.xpath(".//a[@class='movie-title']")[0]
         url = link.xpath("./@href")[0].lstrip(' .')
         if not url.startswith("http://"):
-            link = SITEURL + link
+            url = SITEURL + url
         image = None
         x_image = item.xpath("//img/@src")
         if x_image:
@@ -59,7 +59,7 @@ def ShowcaseMenu(url,title):
         # except:
         #     continue
 
-        oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title, thumb=image))
+        oc.add(DirectoryObject(key=Callback(PlayMovie, url=url, title=title), title=title, thumb=image))
 
     if len(oc) == 0:
         return ObjectContainer(header=title, message=L('ShowWarning'))
