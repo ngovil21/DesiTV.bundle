@@ -31,7 +31,9 @@ def MainMenu(url,title):
     oc = ObjectContainer(title2=title)
 
     oc.add(DirectoryObject(key=Callback(ShowcaseMenu, url=url, title='Showcase'), title='Showcase'))
-    oc.add(DirectoryObject(key=Callback(SearchInputMenu, title='Search', language=title), title='Search'))
+    oc.add(InputDirectoryObject(key=Callback(SearchResultsMenu, language=title), title='Search',
+                                prompt="Enter the name of the Movie to search:"))
+   # oc.add(DirectoryObject(key=Callback(SearchInputMenu, title='Search', language=title), title='Search'))
     return oc
 
 @route(PREFIX + '/einthusan/showcase')
@@ -69,11 +71,11 @@ def SearchInputMenu(title, language):
 
     oc = ObjectContainer(title2=title)
 
-    oc.add(InputDirectoryObject(key=Callback(SearchResultsMenu, language=language), title=title,prompt="Enter the name of the Movie to search:"))
+    oc.add(InputDirectoryObject(key=Callback(SearchResultsMenu, language=language), title=title, prompt="Enter the name of the Movie to search:"))
     return oc
 
 @route(PREFIX + '/einthusan/searchresults')
-def SearchResultsMenu(language="hindi", query=''):
+def SearchResultsMenu(language="hindi", query):
 
     oc = ObjectContainer(title2="Search")
 
