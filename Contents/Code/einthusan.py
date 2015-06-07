@@ -117,10 +117,10 @@ def MovieListMenu(url, title):
     html = HTML.ElementFromURL(url)
 
     for item in html.xpath("//div[@id='content']/div[@class='video-listing-wrapper']/div/div"):
-        x_image = item.xpath("./div/a/img")[0]
+        x_image = item.xpath("./div//img")
         thumb=None
         if x_image:
-            image = x_image.xpath("./@src")[0].lstrip(". ")
+            image = x_image[0].xpath("./@src")[0].lstrip(". ")
             if not image.startswith("http:"):
                 image = SITEURL + image
             thumb = Resource.ContentsOfURLWithFallback(url=image, fallback=R(ICON))
