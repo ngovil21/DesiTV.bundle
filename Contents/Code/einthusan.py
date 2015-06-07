@@ -117,7 +117,7 @@ def MovieListMenu(url, title):
     html = HTML.ElementFromURL(url)
 
     for item in html.xpath("//div[@class='video-object-wrapper']"):
-        x_image = item.xpath(".//img")
+        x_image = item.xpath("./a//img")
         thumb=None
         if x_image:
             image = x_image[0].xpath("./@src")[0].lstrip(". ")
@@ -179,7 +179,7 @@ def PlayMovie(url,title):
 
     source = HTML.StringFromElement(html)
 
-    thumb = html.xpath("//div[@class='video-object-thumb']//img/@src")[0]
+    thumb = html.xpath("//div[@class='video-object-wrapper']/a//img/@src")[0]
 
     match = re.compile("'file': '(.+?)'").findall(source)
     if len(match) == 0:
