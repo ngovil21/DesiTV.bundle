@@ -142,14 +142,18 @@ def EpisodeLinksMenu(url, title, index):
 
   html = HTML.ElementFromURL(url)
 
-  items = html.xpath(".//*[@id='centercol']/table[" + str(index) + "]/tbody/tr/td/a")
+  items = html.xpath(".//div[@id='centerblocks']/table[" + str(index) +"]/tbody/tr/td/a")
+  for item in items:
+    link = item.xpath("@href")[0]
+    code = HTML.ElementFromURL(link)
+    rlink = code.xpath(".//*[@id='topsource']/a/@href")[0]
 
-  if type == "Dailymotion":
-     items = GetDailymotion(html)
-  elif type == "Fastplay":
-     items = GetFlashPlayer(html)
-  else:
-     items = None
+  # if type == "Dailymotion":
+  #    items = GetDailymotion(html)
+  # elif type == "Fastplay":
+  #    items = GetFlashPlayer(html)
+  # else:
+  #    items = None
 
   for item in items:
     try:
