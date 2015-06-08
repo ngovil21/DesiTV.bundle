@@ -103,19 +103,19 @@ def BlurayMenu(url, title, language):
 @route(PREFIX + '/einthusan/Organize')
 def OrganizeMenu(url, title, type="Year"):
     oc = ObjectContainer(title2=title)
-    yurl = url + "&organize=" + type
+    ourl = url + "&organize=" + type
 
-    html = HTML.ElementFromURL(yurl)
+    html = HTML.ElementFromURL(ourl)
 
     for item in html.xpath("//div[@id='video-organizer-wrapper']/div[@class='video-organizer-element-wrapper']/a"):
         try:
-            year = item.xpath("./text()")[0]
+            filter = item.xpath("./text()")[0]
             link = item.xpath("./@href")[0].lstrip(" .")
             if not link.startswith("http://"):
                 link = url + link
         except:
             continue
-        oc.add(DirectoryObject(key=Callback(MovieListMenu, url=link, title=year), title=year, thumb=None))
+        oc.add(DirectoryObject(key=Callback(MovieListMenu, url=link, title=filter), title=filter, thumb=None))
 
     if len(oc) == 0:
         return ObjectContainer(header=title, message=L('ShowWarning'))
