@@ -76,7 +76,11 @@ def HDMenu(url, title, language):
 
     url = "http://einthusan.com/movies/index.php?lang=" + language
 
-    oc.add(DirectoryObject(key=Callback(YearMenu, url=url, title="By Year"), title="By Year"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Year", type="Year"), title="By Year"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Alphabet", type="Alphabetically"), title="By Alphabet"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Cast", type="Cast"), title="By Cast"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Rating", type="Rating"), title="By Rating"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Director", type="Director"), title="By Director"))
 
     return oc
 
@@ -87,15 +91,19 @@ def BlurayMenu(url, title, language):
 
     url = "http://einthusan.com/bluray/index.php?lang=" + language
 
-    oc.add(DirectoryObject(key=Callback(YearMenu, url=url, title="By Year"), title="By Year"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Year", type="Year"), title="By Year"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Alphabet", type="Alphabetically"), title="By Alphabet"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Cast", type="Cast"), title="By Cast"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Rating", type="Rating"), title="By Rating"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Director", type="Director"), title="By Director"))
 
     return oc
 
 
-@route(PREFIX + '/einthusan/Year')
-def YearMenu(url, title):
+@route(PREFIX + '/einthusan/Organize')
+def OrganizeMenu(url, title, type="Year"):
     oc = ObjectContainer(title2=title)
-    yurl = url + "&organize=Year"
+    yurl = url + "&organize=" + type
 
     html = HTML.ElementFromURL(yurl)
 
