@@ -222,7 +222,7 @@ def PlayMovie(url, title):
 
     posted = html.xpath("//div[@class='movie-description-wrapper']/p/text()")[0]
     words = posted.split()
-    date = words[1] + " " + words[2] + " " words[3]
+    date = words[1] + " " + words[2] + " " + words[3]
 
     match = re.compile("'file': '(.+?)'").findall(source)
 
