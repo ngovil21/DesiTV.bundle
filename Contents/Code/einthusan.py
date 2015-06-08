@@ -140,10 +140,12 @@ def MovieListMenu(url, title):
     if len(pages) > 1:
         prevPage = ""
         nextPage = ""
-        if url.contains("movies"):
+        if "movies" in url:
             baseURL = "http://einthusan.com/movies/index.php"
-        elif url.contains("bluray"):
+        elif "bluray" in url:
             baseURL  = "http://einthusan.com/bluray/index.php"
+        else:
+            baseURL = SITEURL + "index.php"
         for i in range(0,len(pages)):
             p = pages[i]
             if p.xpath("./@class='numerical-nav-selected'"):
