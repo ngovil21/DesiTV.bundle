@@ -92,7 +92,7 @@ def BlurayMenu(url, title, language):
     url = "http://einthusan.com/bluray/index.php?lang=" + language
 
     oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Year", type="Year"), title="By Year"))
-    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Alphabet", type="Alphabetically"), title="By Alphabet"))
+    oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Alphabet", type="Alphabetical"), title="By Alphabet"))
     oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Cast", type="Cast"), title="By Cast"))
     oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Rating", type="Rating"), title="By Rating"))
     oc.add(DirectoryObject(key=Callback(OrganizeMenu, url=url, title="By Director", type="Director"), title="By Director"))
@@ -141,8 +141,8 @@ def MovieListMenu(url, title):
         link = x_link.xpath("./@href")[0].lstrip(" .")
         if not link.startswith("http://"):
             link = SITEURL + link
-        title = x_link.xpath("./text()")[0]
-        oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=title), title=title, thumb=thumb))
+        name = x_link.xpath("./text()")[0]
+        oc.add(DirectoryObject(key=Callback(PlayMovie, url=link, title=name), title=name, thumb=thumb))
 
     pages = html.xpath(".//div[@id='content']/div[@class='numerical-nav']/a")
     if len(pages) > 1:
@@ -220,11 +220,16 @@ def PlayMovie(url, title):
     if not thumb.startswith("http:"):
         thumb = SITEURL + thumb
 
+    posted = html.xpath("//div[@class='movie-description-wrapper']/p/text()")[0]
+    words = posted.split()
+    date = words[1] + " " + words[2] + " " words[3]
+
     match = re.compile("'file': '(.+?)'").findall(source)
+
     if len(match) == 0:
         return ObjectContainer(header=title, message=L('ShowWarning'))
 
-    oc.add(CreateVideoObject(match[0], title, thumb, None, False))
+    oc.add(CreateVideoObject(match[0], title, thumb, date, False))
 
     return oc
 
