@@ -142,7 +142,7 @@ def MovieListMenu(url, title):
         nextPage = ""
         if url.contains("movies"):
             baseURL = "http://einthusan.com/movies/index.php"
-        elif url.contains("blueray"):
+        elif url.contains("bluray"):
             baseURL  = http://einthusan.com/bluray/index.php
         for i in range(0,len(pages)):
             p = pages[i]
