@@ -4,9 +4,9 @@ import urlparse
 import re
 import time
 
-SITETITLE = L('ApniTvTitle')
+SITETITLE = "Desi TV Box"
 SITEURL = 'http://www.desitvbox.me/'
-SITETHUMB = 'icon-apnitv.png'
+SITETHUMB = 'icon-desitvbox.png'
 
 PREFIX = common.PREFIX
 NAME = common.NAME
