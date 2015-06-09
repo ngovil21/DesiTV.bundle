@@ -15,14 +15,22 @@ def TestMenu(url):
 
   final_url, USER_AGENT = Movshare.PlayVideo(url)
 
-  oc.add(CreateVideoObject(
-    url=url,
-    title="Video Weed",
-    thumb=None,
-    originally_available_at=None,
-    user_agent=USER_AGENT))
+  # oc.add(CreateVideoObject(
+  #   url=url,
+  #   title="Video Weed",
+  #   thumb=None,
+  #   originally_available_at=None,
+  #   user_agent=USER_AGENT))
+  #
+  # oc.user_agent = USER_AGENT
 
-  oc.user_agent = USER_AGENT
+  oc.add(VideoClipObject(
+    key = WebVideoURL(final_url),
+    rating_key = "test",
+    title="Video Weed"
+    )
+    , user_agent=USER_AGENT
+  )
 
   return oc
 
