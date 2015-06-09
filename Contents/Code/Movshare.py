@@ -171,8 +171,7 @@ def PlayVideo(url,title=None):
 	video_object = VideoClipObject(
         key=WebVideoURL(final_url),
         rating_key = file_id,
-        title = title,
-        user_agent = USER_AGENT
+        title = title
 	)
 
 	# Might as well set a sensible user agent string.
