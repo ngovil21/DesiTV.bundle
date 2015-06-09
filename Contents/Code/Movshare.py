@@ -159,14 +159,14 @@ def PlayVideo(url):
 		
 		# API should be HTML form encoded query string. Break it down to get elem we're
 		# interested in.
-		# api_info = cgi.parse_qs(content)
-		api_info = urllib.parse.parse_qs(content)
+		api_info = cgi.parse_qs(content)
+		#api_info = urllib.parse.parse_qs(content)
 		final_url = api_info['url'][0]
 		
 	except Exception as ex:
 		return LogProviderError("Error whilst retrieving final url from API page.", ex)
 		
-	#Log(final_url)
+	Log(final_url)
 	
 	oc = ObjectContainer(
 		objects = [
