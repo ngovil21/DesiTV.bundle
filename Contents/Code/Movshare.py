@@ -192,13 +192,14 @@ def CreateVideoObject(url, title=None, thumb=None, originally_available_at=None,
     audio_channels = 2
 
     video_object = VideoClipObject(
-        key=Callback(
-            CreateVideoObject,
-            url=url,
+        key=ObjectContiner(
+            objects=VideoClipObject(
+            key=url,
+            rating_key=url,
             title=title,
             thumb=thumb,
-            originally_available_at=originally_available_at,
-            include_container=True
+            originally_available_at=originally_available_at
+            )
         ),
         rating_key=url,
         title=title,
