@@ -168,16 +168,16 @@ def PlayVideo(url):
 		
 	Log(final_url)
 	
-	oc = ObjectContainer(
-		objects = [
-			CreateVideoObject(final_url)
-		]
-	)
+	# oc = ObjectContainer(
+	# 	objects = [
+	# 		CreateVideoObject(final_url)
+	# 	]
+	# )
 
 	# Might as well set a sensible user agent string.
-	oc.user_agent = USER_AGENT
+	#oc.user_agent = USER_AGENT
 	
-	return oc
+	return final_url, USER_AGENT
 
 
 def CreateVideoObject(url, title=None, thumb=None, originally_available_at=None, summary=None, include_container=False):
