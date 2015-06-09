@@ -55,12 +55,12 @@ def MediaObjectsForURL(url):
 	
 	return [
 		MediaObject(
-			parts = [PartObject(key=Callback(getVideo, url=url))],
+			parts = [PartObject(key=Callback(PlayVideo, url=url))],
 		)
 	]
 	
 @indirect	
-def getVideo(url):
+def PlayVideo(url):
 
 	cj = cookielib.CookieJar()
 	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
