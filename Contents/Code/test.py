@@ -13,7 +13,7 @@ def TestMenu(url):
 
   oc = ObjectContainer(title2="Test")
 
-  final_url = Movshare.PlayVideo(url)
+  final_url, USER_AGENT = Movshare.PlayVideo(url)
 
   oc.add(CreateVideoObject(
     url=final_url,
@@ -21,13 +21,15 @@ def TestMenu(url):
     thumb=None,
     originally_available_at=None))
 
+  oc.user_agent = USER_AGENT
+
   return oc
 
   #return ObjectContainer(header="Empty", message="Unable to display videos for this show right now.")
 
 ####################################################################################################
 
-
+@route(PREFIX + '/test/CreateVideo')
 def CreateVideoObject(url, title, thumb, originally_available_at, include_container=False):
   try:
     originally_available_at = Datetime.ParseDate(originally_available_at).date()
