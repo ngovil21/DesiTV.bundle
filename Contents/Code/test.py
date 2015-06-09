@@ -16,7 +16,7 @@ def TestMenu(url):
   final_url, USER_AGENT = Movshare.PlayVideo(url)
 
   oc.add(CreateVideoObject(
-    url=final_url,
+    url=url,
     title="Video Weed",
     thumb=None,
     originally_available_at=None,
@@ -58,7 +58,7 @@ def CreateVideoObject(url, title, thumb, originally_available_at, include_contai
     items = [
       MediaObject(
         parts = [
-          PartObject(key=url)
+          PartObject(key=Callback(Movshare.PlayVideo, url=url))
         ],
         container = container,
         video_codec = video_codec,
