@@ -149,7 +149,7 @@ def PlayVideo(url,title=None):
 			urllib.quote_plus(api_key)
 		)
 	
-		#Log('Requesting ' + api_url)
+		Log('Requesting ' + api_url)
 		request = urllib2.Request(api_url)
 		request.add_header('User-agent', USER_AGENT)
 		response = opener.open(request)
