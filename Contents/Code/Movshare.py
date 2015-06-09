@@ -1,5 +1,6 @@
 import re, urlparse, cgi, urllib, urllib2, cookielib, urlparse, string
 from datetime import date
+import DateTime
 from BeautifulSoup import BeautifulSoup
 
 
@@ -59,7 +60,7 @@ def MediaObjectsForURL(url):
 	]
 	
 @indirect	
-def PlayVideo(url):
+def getVideo(url):
 
 	cj = cookielib.CookieJar()
 	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
@@ -158,23 +159,18 @@ def PlayVideo(url):
 		
 		# API should be HTML form encoded query string. Break it down to get elem we're
 		# interested in.
-		api_info = cgi.parse_qs(content)
+		# api_info = cgi.parse_qs(content)
+        api_info = urllib.parse.parse_qs(content)
 		final_url = api_info['url'][0]
 		
 	except Exception, ex:
 		return LogProviderError("Error whilst retrieving final url from API page.", ex)
 		
-	Log(final_url)
+	#Log(final_url)
 	
 	oc = ObjectContainer(
 		objects = [
-			VideoClipObject(
-				items = [
-					MediaObject(
-						parts = [PartObject(key=final_url)]
-					)
-				]
-			)
+			CreateVideoObject(final_url)
 		]
 	)
 
@@ -182,7 +178,49 @@ def PlayVideo(url):
 	oc.user_agent = USER_AGENT
 	
 	return oc
-	
+
+
+def CreateVideoObject(url, title=None, thumb=None, originally_available_at=None, summary=None, include_container=False):
+    try:
+        originally_available_at = Datetime.ParseDate(originally_available_at).date()
+    except:
+        originally_available_at = None
+
+    container = Container.MP4
+    video_codec = VideoCodec.H264
+    audio_codec = AudioCodec.AAC
+    audio_channels = 2
+
+    video_object = VideoClipObject(
+        key=Callback(
+            CreateVideoObject,
+            url=url,
+            title=title,
+            thumb=thumb,
+            originally_available_at=originally_available_at,
+            include_container=True
+        ),
+        rating_key=url,
+        title=title,
+        thumb=thumb,
+        originally_available_at=originally_available_at,
+        items=[
+            MediaObject(
+                parts=[
+                    PartObject(key=url)
+                ],
+                container=container,
+                video_codec=video_codec,
+                audio_codec=audio_codec,
+                audio_channels=audio_channels
+            )
+        ]
+    )
+
+    if include_container:
+        return ObjectContainer(objects=[video_object])
+    else:
+        return video_object
 
 ###############################################################################
 # Util methods
