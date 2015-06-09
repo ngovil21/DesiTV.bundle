@@ -5,6 +5,7 @@ import apnitv
 import desitvforum
 import desitvbox
 import einthusan
+import test
 
 PREFIX = common.PREFIX
 NAME = common.NAME
@@ -33,6 +34,8 @@ def MainMenu():
   oc.add(DirectoryObject(key=Callback(desitvforum.TypeMenu, url=desitvforum.SITEURL), title=desitvforum.SITETITLE, thumb=R(desitvforum.SITETHUMB)))
   oc.add(DirectoryObject(key=Callback(desitvbox.ChannelsMenu, url=desitvbox.SITEURL), title=desitvbox.SITETITLE, thumb=R(desitvbox.SITETHUMB)))
   oc.add(DirectoryObject(key=Callback(einthusan.LanguagesMenu, url=einthusan.SITEURL), title=einthusan.SITETITLE, thumb=R(einthusan.SITETHUMB)))
+
+  oc.add(DirectoryObject(key=Callback(test.TestMenu, url=test.TEST_URL), title="Test"))
 
   return oc
 
