@@ -19,7 +19,8 @@ def TestMenu(url):
     url=final_url,
     title="Video Weed",
     thumb=None,
-    originally_available_at=None,USER_AGENT))
+    originally_available_at=None,
+    user_agent=USER_AGENT))
 
   oc.user_agent = USER_AGENT
 
