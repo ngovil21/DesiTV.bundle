@@ -59,7 +59,7 @@ def MediaObjectsForURL(url):
 		)
 	]
 	
-@route("/Plugins/Movshare/PlayVideo")
+@route("/Plugins/Sites/Movshare/PlayVideo")
 def PlayVideo(url):
 
 	cj = cookielib.CookieJar()
@@ -155,7 +155,7 @@ def PlayVideo(url):
 		response = opener.open(request)
 		
 		content = response.read()
-		#Log(content)
+		Log(content)
 		
 		# API should be HTML form encoded query string. Break it down to get elem we're
 		# interested in.
