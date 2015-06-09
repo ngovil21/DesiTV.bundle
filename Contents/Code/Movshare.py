@@ -55,7 +55,7 @@ def MediaObjectsForURL(url):
 	
 	return [
 		MediaObject(
-			parts = [PartObject(key=Callback(PlayVideo, url=url))],
+			parts = [PartObject(key=Callback(getVideo, url=url))],
 		)
 	]
 	
@@ -78,7 +78,7 @@ def getVideo(url):
 		provider_url = response.geturl()
 		#Log(provider_url)
 					
-	except Exception, ex:
+	except Exception as ex:
 		return LogProviderError("Error whilst retrieving initial provider page (" + url + ")", ex)
 	
 	
@@ -105,7 +105,7 @@ def getVideo(url):
 	
 			soup = BeautifulSoup(response.read())
 			
-		except Exception, ex:
+		except Exception as ex:
 			return LogProviderError("Error whilst trying to navigate from initial provider page to video page (" + url + ")", ex)
 	
 	
@@ -135,7 +135,7 @@ def getVideo(url):
 		file_id = re.search("flashvars\.file=\"?(.*?)\"?;", contents).group(1)
 		#Log("File ID:" + file_id)
 		
-	except Exception, ex:
+	except Exception as ex:
 		raise ex
 		return LogProviderError("Error whilst retrieving API Key and File ID. Provider may have changed page layout.", ex)
 	
@@ -160,10 +160,10 @@ def getVideo(url):
 		# API should be HTML form encoded query string. Break it down to get elem we're
 		# interested in.
 		# api_info = cgi.parse_qs(content)
-        api_info = urllib.parse.parse_qs(content)
+		api_info = urllib.parse.parse_qs(content)
 		final_url = api_info['url'][0]
 		
-	except Exception, ex:
+	except Exception as ex:
 		return LogProviderError("Error whilst retrieving final url from API page.", ex)
 		
 	#Log(final_url)
