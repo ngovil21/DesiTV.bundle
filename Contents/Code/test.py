@@ -36,7 +36,7 @@ def CreateVideoObject(url, title, thumb, originally_available_at, include_contai
   except:
     originally_available_at = None
 
-  container = Container.MP4
+  container = "flv"
   video_codec = VideoCodec.H264
   audio_codec = AudioCodec.AAC
   audio_channels = 2
