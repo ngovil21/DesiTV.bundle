@@ -1,6 +1,6 @@
 import re, urlparse, cgi, urllib, urllib2, cookielib, urlparse, string
 from datetime import date
-import DateTime
+import time
 from BeautifulSoup import BeautifulSoup
 
 
