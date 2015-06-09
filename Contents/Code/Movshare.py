@@ -59,7 +59,7 @@ def MediaObjectsForURL(url):
 		)
 	]
 	
-@indirect	
+@route("/Plugins/Movshare/PlayVideo")
 def PlayVideo(url):
 
 	cj = cookielib.CookieJar()
