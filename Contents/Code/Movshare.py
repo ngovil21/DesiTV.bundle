@@ -60,7 +60,7 @@ def MediaObjectsForURL(url):
 	]
 	
 @route("/Plugins/Sites/Movshare/PlayVideo")
-def PlayVideo(url):
+def PlayVideo(url,title=None):
 
 	cj = cookielib.CookieJar()
 	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
@@ -168,60 +168,18 @@ def PlayVideo(url):
 		
 	Log(final_url)
 	
-	# oc = ObjectContainer(
-	# 	objects = [
-	# 		CreateVideoObject(final_url)
-	# 	]
-	# )
+	video_object = VideoClipObject(
+        key=WebVideoURL(final_url),
+        rating_key = file_id,
+        title = title,
+        user_agent = USER_AGENT
+	)
 
 	# Might as well set a sensible user agent string.
 	#oc.user_agent = USER_AGENT
 	
-	return final_url, USER_AGENT
+	return video_object
 
-
-def CreateVideoObject(url, title=None, thumb=None, originally_available_at=None, summary=None, include_container=False):
-    try:
-        originally_available_at = Datetime.ParseDate(originally_available_at).date()
-    except:
-        originally_available_at = None
-
-    container = Container.MP4
-    video_codec = VideoCodec.H264
-    audio_codec = AudioCodec.AAC
-    audio_channels = 2
-
-    video_object = VideoClipObject(
-        key=ObjectContainer(
-            objects=VideoClipObject(
-            key=url,
-            rating_key=url,
-            title=title,
-            thumb=thumb,
-            originally_available_at=originally_available_at
-            )
-        ),
-        rating_key=url,
-        title=title,
-        thumb=thumb,
-        originally_available_at=originally_available_at,
-        items=[
-            MediaObject(
-                parts=[
-                    PartObject(key=url)
-                ],
-                container=container,
-                video_codec=video_codec,
-                audio_codec=audio_codec,
-                audio_channels=audio_channels
-            )
-        ]
-    )
-
-    if include_container:
-        return ObjectContainer(objects=[video_object])
-    else:
-        return video_object
 
 ###############################################################################
 # Util methods
