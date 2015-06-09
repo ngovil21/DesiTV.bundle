@@ -19,7 +19,7 @@ def TestMenu(url):
     url=final_url,
     title="Video Weed",
     thumb=None,
-    originally_available_at=None))
+    originally_available_at=None),USER_AGENT)
 
   oc.user_agent = USER_AGENT
 
@@ -30,7 +30,7 @@ def TestMenu(url):
 ####################################################################################################
 
 @route(PREFIX + '/test/CreateVideo')
-def CreateVideoObject(url, title, thumb, originally_available_at, include_container=False):
+def CreateVideoObject(url, title, thumb, originally_available_at, include_container=False, user_agent=None):
   try:
     originally_available_at = Datetime.ParseDate(originally_available_at).date()
   except:
@@ -68,6 +68,6 @@ def CreateVideoObject(url, title, thumb, originally_available_at, include_contai
   )
 
   if include_container:
-    return ObjectContainer(objects=[video_object])
+    return ObjectContainer(objects=[video_object], user_agent=user_agent)
   else:
     return video_object
