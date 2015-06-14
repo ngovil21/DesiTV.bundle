@@ -119,12 +119,13 @@ def PlayerLinksMenu(url, title):
     # Add the item to the collection
     for item in sites:
         type = item.xpath("./text()")[0]
-        Log(type)
         oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type), title=type))
 
     # If there are no channels, warn the user
     if len(oc) == 0:
         return ObjectContainer(header=title, message=L('PlayerWarning'))
+
+    return oc
 
 @route(PREFIX + '/bollystop/episodelinksmenu')
 def EpisodeLinksMenu(url, title):
