@@ -62,6 +62,8 @@ def ShowsMenu(url, title):
         link = show.xpath("./@href")[0]
         image = show.xpath("./../../p//img/@src")
         if image:
+            if not image[0].startswith("http:"):
+                image[0] = SITEURL + image[0]
             thumb = Resource.ContentsOfURLWithFallback(url=image[0], fallback=R(ICON))
 
 
