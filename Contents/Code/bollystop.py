@@ -111,9 +111,7 @@ def EpisodesMenu(url, title):
 def PlayerLinksMenu(url, title):
 
     oc = ObjectContainer(title2=title)
-    html = HTML.ElementFromURL(url, timeout=10)
-
-    #Log(HTML.StringFromElement(html))
+    html = HTML.ElementFromURL(url)
 
     sites = html.xpath("//div[@id='serial_episodes']/h3")
     # Add the item to the collection
