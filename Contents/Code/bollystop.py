@@ -92,14 +92,14 @@ def EpisodesMenu(url, title):
         try:
             # Episode link
             link = item.xpath("./@href)")[0]
-            title = item.xpath("./../..//div[@class='episode_date']/text()")[0]
+            episode = item.xpath("./../..//div[@class='episode_date']/text()")[0]
             if not link.startswith("http:"):
                 link = SITEURL + link
         except Exception as e:
-            Log("%s" % e)
+            raise e
 
         # Add the found item to the collection
-        oc.add(PopupDirectoryObject(key=Callback(PlayerLinksMenu, url=link, title=title), title=title))
+        oc.add(PopupDirectoryObject(key=Callback(PlayerLinksMenu, url=link, title=episode), title=episode))
 
     # If there are no channels, warn the user
     if len(oc) == 0:
