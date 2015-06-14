@@ -87,14 +87,11 @@ def EpisodesMenu(url, title):
 
     html = HTML.ElementFromURL(url)
 
-    for item in html.xpath("//div[@id='left-inside']/div/h2[@class='titles']/a"):
+    for item in html.xpath("//div[@id='serial_episodes']/div/div[2]/a"):
         try:
-            # Episode title
-            episode = item.xpath("./text()")[0]
-            if "written" in episode.lower():
-                continue
-            # episode link
-            link = item.xpath("./@href")[0]
+            # Episode link
+            link = item.xpath("./@href)")[0]
+            title = item.xpath("./../div[1]/text()")[0]
             if not link.startswith("http:"):
                 link = SITEURL + link
         except:
@@ -108,3 +105,21 @@ def EpisodesMenu(url, title):
         return ObjectContainer(header=title, message=L('EpisodeWarning'))
 
     return oc
+
+
+@route(PREFIX + '/bollystop/playerlinksmenu')
+def PlayerLinksMenu(url, title):
+    oc = ObjectContainer(title2=title)
+
+    html = HTML.ElementFromURL(url)
+
+    sites = html.xpath("//div[@id='serial_episodes']/h3")
+    # Add the item to the collection
+    for item in sites:
+        type = item.xpath("./text()")
+        oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type), title=type))
+
+    # If there are no channels, warn the user
+    if len(oc) == 0:
+        return ObjectContainer(header=title, message=L('PlayerWarning'))
+
