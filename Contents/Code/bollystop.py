@@ -89,14 +89,14 @@ def EpisodesMenu(url, title):
 
     for item in html.xpath("//div[@id='serial_episodes']/div/div[2]/a"):
         link=""
-        try:
-            # Episode link
-            link = item.xpath("./@href)")[0]
-            episode = item.xpath("./../..//div[@class='episode_date']/text()")[0]
-            if not link.startswith("http:"):
-                link = SITEURL + link
-        except Exception as e:
-            raise e
+        # try:
+        # Episode link
+        link = item.xpath("./@href)")[0]
+        episode = item.xpath("./../..//div[@class='episode_date']/text()")[0]
+        if not link.startswith("http:"):
+            link = SITEURL + link
+        # except Exception as e:
+        #     raise e
 
         # Add the found item to the collection
         oc.add(PopupDirectoryObject(key=Callback(PlayerLinksMenu, url=link, title=episode), title=episode))
