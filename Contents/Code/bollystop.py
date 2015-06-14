@@ -117,7 +117,9 @@ def PlayerLinksMenu(url, title):
     # Add the item to the collection
     for item in sites:
         type = item.xpath("./text()")[0]
-        oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type), title=type))
+        index = item.xpath("./position()")
+        Log(str(index))
+        oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, index=index), title=type))
 
     # If there are no channels, warn the user
     if len(oc) == 0:
@@ -126,14 +128,14 @@ def PlayerLinksMenu(url, title):
     return oc
 
 @route(PREFIX + '/bollystop/episodelinksmenu')
-def EpisodeLinksMenu(url, title):
+def EpisodeLinksMenu(url, title, index):
     oc = ObjectContainer(title2=title)
 
     html = HTML.ElementFromURL(url)
 
-    items = html.xpath("//div[@id='serial_episodes']/h3[contains(text(),'" + title + "')]/following-sibling::div[1]/div//a")
+    items = html.xpath("//div[@id='serial_episodes']/h3["+str(index)+"]/following-sibling::div[1]/div//a")
     #Log(HTML.StringFromElement(items[0]))
-
+    parts=[]
     for item in items:
         # try:
         # Video site
@@ -150,7 +152,8 @@ def EpisodeLinksMenu(url, title):
         # Show date
         # date = GetShowDate(videosite)
         # Get video source url and thumb
-        link, host = GetURLSource(redirect, link)
+        link, host, thumb = GetURLSource(redirect, link)
+        parts.append(link)
         # except:
         #     continue
 
@@ -159,12 +162,16 @@ def EpisodeLinksMenu(url, title):
             # Log ('Dailymotion Link: ' + link)
             oc.add(VideoClipObject(
                 url=link,
-                title=videotitle
+                title=videotitle,
+                thumb=thumb,
+                urls=parts
             ))
         elif host == 'playwire':
             oc.add(CreateVideoObject(
                 url=link,
-                title=videotitle
+                title=videotitle,
+                thumb=thumb,
+                urls=parts
             ))
 
     # If there are no channels, warn the user
@@ -182,6 +189,7 @@ def GetURLSource(url, referer, date=''):
   if string.find('dailymotion') != -1:
     url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
     host = 'dailymotion'
+    thumb=None
   elif string.find('playwire') != -1:
     #Log("pID: " + str(len(html.xpath("//script/@data-publisher-id"))) + " vID: " + str(len(html.xpath("//script/@data-video-id"))))
     if len(html.xpath("//script/@data-publisher-id")) != 0 and len(html.xpath("//script/@data-video-id")) != 0:
@@ -194,6 +202,7 @@ def GetURLSource(url, referer, date=''):
       #import json
       #Log(json.dumps(json_obj,indent=4))
       manifest = json_obj['content']['media']['f4m']
+      poster = json_obj['content']['poster']
       #Log("Manifest: " + str(manifest))
       content = HTTP.Request(manifest, headers = {'Accept': 'text/html'}).content
       content = content.replace('\n','').replace('  ','')
@@ -209,15 +218,16 @@ def GetURLSource(url, referer, date=''):
       url = baseurl + "/" + mediaurl
       host = 'playwire'
       Log("URL: " + url)
+      thumb = poster
 
   # thumb = GetThumb(html)
 
   # return url, thumb
-  return url, host
+  return url, host, poster
 
 
 @route(PREFIX + '/bollystop/createvideoobject')
-def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at=None, include_container=False):
+def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at=None, include_container=False, urls=None):
   try:
     originally_available_at = Datetime.ParseDate(originally_available_at).date()
   except:
@@ -227,6 +237,15 @@ def CreateVideoObject(url, title, thumb=None, summary='', originally_available_a
   video_codec = VideoCodec.H264
   audio_codec = AudioCodec.AAC
   audio_channels = 2
+
+  if urls:
+      parts = []
+      for part in urls:
+          parts.append(PartObject(key=part))
+  else:
+      parts = [
+          PartObject(key=url)
+      ]
 
   video_object = VideoClipObject(
     key = Callback(
@@ -245,9 +264,7 @@ def CreateVideoObject(url, title, thumb=None, summary='', originally_available_a
     originally_available_at=originally_available_at,
     items = [
       MediaObject(
-        parts = [
-          PartObject(key=url)
-        ],
+        parts = parts,
         container = container,
         video_codec = video_codec,
         audio_codec = audio_codec,
