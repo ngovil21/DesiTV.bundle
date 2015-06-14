@@ -161,14 +161,14 @@ def EpisodeLinksMenu(url, title):
                 title=videotitle,
                 thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
                 originally_available_at= None #Datetime.ParseDate(date).date()))
-            )
+            ))
         elif host == 'playwire':
             oc.add(CreateVideoObject(
                 url=link,
                 title=videotitle,
                 thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
                 originally_available_at= None #Datetime.ParseDate(date).date()))
-            )
+            ))
 
     # If there are no channels, warn the user
     if len(oc) == 0:
