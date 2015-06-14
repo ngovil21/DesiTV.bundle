@@ -130,8 +130,10 @@ def EpisodeLinksMenu(url, title):
     oc = ObjectContainer(title2=title)
 
     html = HTML.ElementFromURL(url)
+    Log(HTML.StringFromElement(html))
 
     items = html.xpath("//div[@id='serial_episodes']/h3[contains(text(),'" + title + "')]/following-sibling::div[1]/div//a")
+    Log("Number of items: " + str(len(items)))
 
     for item in items:
         try:
