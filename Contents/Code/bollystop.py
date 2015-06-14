@@ -88,6 +88,7 @@ def EpisodesMenu(url, title):
     html = HTML.ElementFromURL(url)
 
     for item in html.xpath("//div[@id='serial_episodes']/div/div[2]/a"):
+        link=""
         try:
             # Episode link
             link = item.xpath("./@href)")[0]
