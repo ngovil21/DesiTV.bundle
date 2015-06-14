@@ -160,14 +160,14 @@ def EpisodeLinksMenu(url, title):
                 url=link,
                 title=videotitle,
                 thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
-                originally_available_at= None #Datetime.ParseDate(date).date()))
+                originally_available_at= '' #Datetime.ParseDate(date).date()))
             ))
         elif host == 'playwire':
             oc.add(CreateVideoObject(
                 url=link,
                 title=videotitle,
                 thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
-                originally_available_at= None #Datetime.ParseDate(date).date()))
+                originally_available_at = '' #Datetime.ParseDate(date).date()))
             ))
 
     # If there are no channels, warn the user
@@ -219,12 +219,12 @@ def GetURLSource(url, referer, date=''):
   return url, host
 
 
-@route(PREFIX + '/desirulez/createvideoobject')
+@route(PREFIX + '/bollystop/createvideoobject')
 def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at='', include_container=True):
   try:
     originally_available_at = Datetime.ParseDate(originally_available_at).date()
   except:
-    originally_available_at = None
+    originally_available_at = ''
 
   container = Container.MP4
   video_codec = VideoCodec.H264
