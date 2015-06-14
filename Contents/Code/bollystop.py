@@ -5,7 +5,7 @@ import time
 
 SITETITLE = "BollyStop"
 SITEURL = 'http://bollystop.com/'
-SITETHUMB = 'icon-desitvbox.png'
+SITETHUMB = 'icon-bollystop.png'
 
 PREFIX = common.PREFIX
 NAME = common.NAME
