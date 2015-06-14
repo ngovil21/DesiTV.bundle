@@ -1,10 +1,11 @@
 import common
 import urlparse
 import Movshare
+import putlocker
 
 PREFIX = common.PREFIX
 
-TEST_URL = "http://www.videoweed.es/file/9f6fdc1064762"
+TEST_URL = "http://putlockers.us/Zee%20Tv%20Serial/12th-june-2015-watch-online-serial/Jodha%20Akbar.php"
 
 ####################################################################################################
 
@@ -12,8 +13,6 @@ TEST_URL = "http://www.videoweed.es/file/9f6fdc1064762"
 def TestMenu(url):
 
 
-  html = HTML.ElementFromURL("http://www.hindistop.com/chakravartin-ashoka-samrat-2/", headers={'Referer': "http://bollystop.com/redirector.php?r=http://www.hindistop.com/chakravartin-ashoka-samrat-2/&s=646022"})
-  Log(HTML.StringFromElement(html))
 
   oc = ObjectContainer(title2="Test")
   #
@@ -30,6 +29,8 @@ def TestMenu(url):
 
   # oc.add(video)
 
+  video = putlocker.PlayVideo(url)
+  Log(video)
 
   return oc
 
