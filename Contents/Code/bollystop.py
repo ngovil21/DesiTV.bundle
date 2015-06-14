@@ -88,7 +88,6 @@ def EpisodesMenu(url, title):
     html = HTML.ElementFromURL(url)
 
     for item in html.xpath("//div[@id='serial_episodes']/div/div[2]/a"):
-        link=""
         # try:
         # Episode link
         link = item.xpath("./@href")[0]
@@ -111,7 +110,7 @@ def EpisodesMenu(url, title):
 @route(PREFIX + '/bollystop/playerlinksmenu')
 def PlayerLinksMenu(url, title):
     oc = ObjectContainer(title2=title)
-
+    Log(url)
     html = HTML.ElementFromURL(url)
 
     sites = html.xpath("//div[@id='serial_episodes']/h3")
