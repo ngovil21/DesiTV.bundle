@@ -33,9 +33,10 @@ def ChannelsMenu(url):
         try:
             image = common.GetThumb(channel.lower())
         except:
-            continue
+            image=None
 
         if channel.lower() in common.GetSupportedChannels():
+            Log(channel)
             oc.add(DirectoryObject(key=Callback(ShowsMenu, url=link, title=channel), title=channel, thumb=image))
 
     # If there are no channels, warn the user
