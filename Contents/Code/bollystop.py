@@ -220,11 +220,11 @@ def GetURLSource(url, referer, date=''):
 
 
 @route(PREFIX + '/bollystop/createvideoobject')
-def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at='', include_container=True):
+def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at=None, include_container=True):
   try:
     originally_available_at = Datetime.ParseDate(originally_available_at).date()
   except:
-    originally_available_at = ''
+    originally_available_at = None
 
   container = Container.MP4
   video_codec = VideoCodec.H264
