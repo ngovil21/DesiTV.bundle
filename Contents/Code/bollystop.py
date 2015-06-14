@@ -149,19 +149,19 @@ def EpisodeLinksMenu(url, title):
         # Show date
         # date = GetShowDate(videosite)
         # Get video source url and thumb
-        link = GetURLSource(redirect, link)
+        link, host = GetURLSource(redirect, link)
         # except:
         #     continue
 
         # Add the found item to the collection
-        if link.find('dailymotion') != -1:
+        if host == 'dailymotion':
             # Log ('Dailymotion Link: ' + link)
             oc.add(VideoClipObject(
                 url=link,
                 title=videotitle,
                 thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
                 originally_available_at=Datetime.ParseDate(date).date()))
-        elif link.find('playwire') != -1:
+        elif host == 'playwire':
             oc.add(CreateVideoObject(
                 url=link,
                 title=videotitle,
@@ -182,16 +182,18 @@ def GetURLSource(url, referer, date=''):
   #Log(string)
   if string.find('dailymotion') != -1:
     url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
+    host = 'dailymotion'
   elif string.find('playwire') != -1:
     #Log("pID: " + str(len(html.xpath("//script/@data-publisher-id"))) + " vID: " + str(len(html.xpath("//script/@data-video-id"))))
     if len(html.xpath("//script/@data-publisher-id")) != 0 and len(html.xpath("//script/@data-video-id")) != 0:
       url = 'http://cdn.playwire.com/' + html.xpath("//script/@data-publisher-id")[0] + '/video-' + date + '-' + html.xpath("//script/@data-video-id")[0] + '.mp4'
+      host = 'playwire'
     else:
       #Log("JSON: " + str(html.xpath("//script/@data-config")))
       json_obj = JSON.ObjectFromURL(html.xpath("//script/@data-config")[0])
       Log("JSON: " + str(json_obj))
-      import json
-      Log(json.dumps(json_obj,indent=4))
+      #import json
+      #Log(json.dumps(json_obj,indent=4))
       manifest = json_obj['content']['media']['f4m']
       #Log("Manifest: " + str(manifest))
       content = HTTP.Request(manifest, headers = {'Accept': 'text/html'}).content
@@ -206,16 +208,17 @@ def GetURLSource(url, referer, date=''):
       mediaurl = re.sub(r'(url|=|\?|")', "", mediaurl.group())
       #Log ('MediaURL: ' + mediaurl)
       url = baseurl + "/" + mediaurl
+      host = 'playwire'
       Log("URL: " + url)
 
   # thumb = GetThumb(html)
 
   # return url, thumb
-  return url
+  return url, host
 
 
 @route(PREFIX + '/desirulez/createvideoobject')
-def CreateVideoObject(url, title, thumb, summary='', originally_available_at='', include_container=True):
+def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at='', include_container=True):
   try:
     originally_available_at = Datetime.ParseDate(originally_available_at).date()
   except:
