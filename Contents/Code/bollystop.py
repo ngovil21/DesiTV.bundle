@@ -135,23 +135,23 @@ def EpisodeLinksMenu(url, title):
     Log(HTML.StringFromElement(items[0]))
 
     for item in items:
-        try:
-            # Video site
-            videotitle = item.xpath("./text()")[0]
-            # Video link
-            link = item.xpath("./@href")[0]
-            if not link.startswith("http:"):
-                link = SITEURL + link
-            Log(link)
-            match = re.compile('redirector.php\?r=(.+?)&s=(.+?)').search(link)
-            redirect = match.group(0)
-            Log(redirect)
-            # Show date
-            # date = GetShowDate(videosite)
-            # Get video source url and thumb
-            link = GetURLSource(redirect, link)
-        except:
-            continue
+        # try:
+        # Video site
+        videotitle = item.xpath("./text()")[0]
+        # Video link
+        link = item.xpath("./@href")[0]
+        if not link.startswith("http:"):
+            link = SITEURL + link
+        Log(link)
+        match = re.compile('redirector.php\?r=(.+?)&s=(.+?)').search(link)
+        redirect = match.group(0)
+        Log(redirect)
+        # Show date
+        # date = GetShowDate(videosite)
+        # Get video source url and thumb
+        link = GetURLSource(redirect, link)
+        # except:
+        #     continue
 
         # Add the found item to the collection
         if link.find('dailymotion') != -1:
