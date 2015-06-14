@@ -132,7 +132,7 @@ def EpisodeLinksMenu(url, title):
     html = HTML.ElementFromURL(url)
 
     items = html.xpath("//div[@id='serial_episodes']/h3[contains(text(),'" + title + "')]/following-sibling::div[1]/div//a")
-    Log(HTML.StringFromElement(items[0]))
+    #Log(HTML.StringFromElement(items[0]))
 
     for item in items:
         # try:
@@ -145,7 +145,7 @@ def EpisodeLinksMenu(url, title):
         Log(link)
         match = re.compile('redirector.php\?r=(.+?)&s=(.+?)').search(link)
         redirect = match.group(1)
-        Log(redirect)
+        #Log(redirect)
         # Show date
         # date = GetShowDate(videosite)
         # Get video source url and thumb
@@ -161,12 +161,14 @@ def EpisodeLinksMenu(url, title):
                 title=videotitle,
                 thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
                 originally_available_at= None #Datetime.ParseDate(date).date()))
+            )
         elif host == 'playwire':
             oc.add(CreateVideoObject(
                 url=link,
                 title=videotitle,
                 thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
                 originally_available_at= None #Datetime.ParseDate(date).date()))
+            )
 
     # If there are no channels, warn the user
     if len(oc) == 0:
