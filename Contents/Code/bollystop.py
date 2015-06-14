@@ -139,6 +139,8 @@ def EpisodeLinksMenu(url, title):
             # videosite = item.xpath("./text()")[0]
             # Video link
             link = item.xpath("./@href")[0]
+            if not link.startswith("http:"):
+                link = SITEURL + link
             # Show date
             # date = GetShowDate(videosite)
             # Get video source url and thumb
