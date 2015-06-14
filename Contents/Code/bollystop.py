@@ -125,7 +125,7 @@ def PlayerLinksMenu(url, title):
         return ObjectContainer(header=title, message=L('PlayerWarning'))
 
 @route(PREFIX + '/bollystop/episodelinksmenu')
-def EpisodeLinksMenu(url, title, index):
+def EpisodeLinksMenu(url, title):
     oc = ObjectContainer(title2=title)
 
     html = HTML.ElementFromURL(url)
