@@ -179,7 +179,7 @@ def GetURLSource(url, referer, date=''):
   html = HTML.ElementFromURL(url=url, headers={'Referer': referer})
   string = HTML.StringFromElement(html)
 
-  Log(string)
+  #Log(string)
   if string.find('dailymotion') != -1:
     url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
   elif string.find('playwire') != -1:
@@ -189,8 +189,8 @@ def GetURLSource(url, referer, date=''):
     else:
       #Log("JSON: " + str(html.xpath("//script/@data-config")))
       json = JSON.ObjectFromURL(html.xpath("//script/@data-config")[0])
-      #Log("JSON: " + str(json))
-      manifest = json['src']
+      Log("JSON: " + str(json))
+      manifest = json['media']['f4m']
       #Log("Manifest: " + str(manifest))
       content = HTTP.Request(manifest, headers = {'Accept': 'text/html'}).content
       content = content.replace('\n','').replace('  ','')
