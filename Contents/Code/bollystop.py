@@ -123,3 +123,6 @@ def PlayerLinksMenu(url, title):
     if len(oc) == 0:
         return ObjectContainer(header=title, message=L('PlayerWarning'))
 
+def EpisodeLinksMenu(url, title):
+    return
+
