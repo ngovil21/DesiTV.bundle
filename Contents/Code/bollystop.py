@@ -188,8 +188,10 @@ def GetURLSource(url, referer, date=''):
       url = 'http://cdn.playwire.com/' + html.xpath("//script/@data-publisher-id")[0] + '/video-' + date + '-' + html.xpath("//script/@data-video-id")[0] + '.mp4'
     else:
       #Log("JSON: " + str(html.xpath("//script/@data-config")))
-      json = JSON.ObjectFromURL(html.xpath("//script/@data-config")[0])
-      Log("JSON: " + str(json))
+      json_obj = JSON.ObjectFromURL(html.xpath("//script/@data-config")[0])
+      Log("JSON: " + str(json_obj))
+      import json
+      Log(json.dumps(json_obj,indent=4))
       manifest = json['media']['f4m']
       #Log("Manifest: " + str(manifest))
       content = HTTP.Request(manifest, headers = {'Accept': 'text/html'}).content
