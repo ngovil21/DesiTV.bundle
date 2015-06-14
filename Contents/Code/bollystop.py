@@ -27,17 +27,22 @@ def ChannelsMenu(url):
             # Channel title
             channel = item.xpath("./text()")[0]
             link = item.xpath("./@href")[0]
+            image = item.xpath("../..//img/@src")
+            if image:
+                if not image[0].startswith("http:"):
+                    image[0] = SITEURL + image[0]
+                thumb = Resource.ContentsOfURLWithFallback(url=image[0], fallback=R(ICON))
         except:
             continue
 
-        try:
-            image = common.GetThumb(channel.lower())
-        except:
-            image=None
+        # try:
+        #     image = common.GetThumb(channel.lower())
+        # except:
+        #     image=None
 
-        if channel.lower() in common.GetSupportedChannels():
-            Log(channel)
-            oc.add(DirectoryObject(key=Callback(ShowsMenu, url=link, title=channel), title=channel, thumb=image))
+        # if channel.lower() in common.GetSupportedChannels():
+        #     Log(channel)
+        oc.add(DirectoryObject(key=Callback(ShowsMenu, url=link, title=channel), title=channel, thumb=thumb))
 
     # If there are no channels, warn the user
     if len(oc) == 0:
