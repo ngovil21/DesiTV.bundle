@@ -141,11 +141,13 @@ def EpisodeLinksMenu(url, title):
             link = item.xpath("./@href")[0]
             if not link.startswith("http:"):
                 link = SITEURL + link
-            redirect = None
+            match = re.compile('redirector.php\?r=(.+?)&s=(.+?)').match(link)
+            redirect = match.group(1)
+            Log(redirect)
             # Show date
             # date = GetShowDate(videosite)
             # Get video source url and thumb
-            link = GetURLSource(link, url)
+            link = GetURLSource(redirect, link)
         except:
             continue
 
