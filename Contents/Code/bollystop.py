@@ -193,7 +193,7 @@ def GetURLSource(url, referer, date=''):
     else:
       #Log("JSON: " + str(html.xpath("//script/@data-config")))
       json_obj = JSON.ObjectFromURL(html.xpath("//script/@data-config")[0])
-      Log("JSON: " + str(json_obj))
+      #Log("JSON: " + str(json_obj))
       #import json
       #Log(json.dumps(json_obj,indent=4))
       manifest = json_obj['content']['media']['f4m']
