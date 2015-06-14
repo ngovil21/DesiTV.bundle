@@ -61,7 +61,7 @@ def ShowsMenu(url, title):
         name = show.xpath("./text()")[0]
         link = show.xpath("./@href")[0]
         link = link.replace("id/", "episodes/")
-        Log(link)
+        #Log(link)
         image = show.xpath("./../../p//img/@src")
         if image:
             if not image[0].startswith("http:"):
