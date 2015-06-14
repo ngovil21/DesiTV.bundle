@@ -141,7 +141,7 @@ def EpisodeLinksMenu(url, title):
             link = item.xpath("./@href")[0]
             if not link.startswith("http:"):
                 link = SITEURL + link
-            link = Redirect(link)
+            redirect =
             # Show date
             # date = GetShowDate(videosite)
             # Get video source url and thumb
