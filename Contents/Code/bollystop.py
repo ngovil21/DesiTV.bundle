@@ -174,6 +174,7 @@ def GetURLSource(url, referer, date=''):
   html = HTML.ElementFromURL(url=url, headers={'Referer': referer})
   string = HTML.StringFromElement(html)
 
+  Log(string)
   if string.find('dailymotion') != -1:
     url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
   elif string.find('playwire') != -1:
