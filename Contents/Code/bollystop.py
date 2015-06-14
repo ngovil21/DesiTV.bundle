@@ -113,12 +113,13 @@ def PlayerLinksMenu(url, title):
     oc = ObjectContainer(title2=title)
     html = HTML.ElementFromURL(url, timeout=10)
 
-    Log(HTML.StringFromElement(html))
+    #Log(HTML.StringFromElement(html))
 
     sites = html.xpath("//div[@id='serial_episodes']/h3")
     # Add the item to the collection
     for item in sites:
         type = item.xpath("./text()")[0]
+        Log(type)
         oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type), title=type))
 
     # If there are no channels, warn the user
