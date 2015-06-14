@@ -1,6 +1,4 @@
 import re, urlparse, cgi, urllib, urllib2, cookielib, urlparse, string
-from datetime import date
-import time
 from BeautifulSoup import BeautifulSoup
 
 
@@ -9,29 +7,7 @@ API_URL = "http://%s/api/player.api.php?pass=undefined&file=%s&user=undefined&ke
 
 def NormalizeURL(url):
 
-	#Log("*********** In MovShare normalizeURL")
-
-	# Deal with special providerInfo URL built up by plugin to return
-	# info about this provider. For all other normal URLs, do nothing. 
-	if ("providerinfo" in url):
-	
-		# Extract out domain.
-		match = re.search("(movshare|novamov|nowvideo|divxstage|videoweed)", url.lower())
-		if (match is None):
-			return url
-	
-		# try:
-		# 	show = Prefs["show_" + match.group(1)]
-		# except Exception, ex:
-		# 	show = False
-			
-		if (show):
-			return url + "&visible=true"
-		else:
-			return url
-			
-	else:
-		return url
+	return url
 
 def canPlay(url):
     match = re.search("(movshare|novamov|nowvideo|divxstage|videoweed)", url.lower())
@@ -149,13 +125,13 @@ def PlayVideo(url,title=None):
 			urllib.quote_plus(api_key)
 		)
 	
-		Log('Requesting ' + api_url)
+		# Log('Requesting ' + api_url)
 		request = urllib2.Request(api_url)
 		request.add_header('User-agent', USER_AGENT)
 		response = opener.open(request)
 		
 		content = response.read()
-		Log(content)
+		# Log(content)
 		
 		# API should be HTML form encoded query string. Break it down to get elem we're
 		# interested in.
