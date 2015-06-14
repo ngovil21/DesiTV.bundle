@@ -138,6 +138,7 @@ def EpisodeLinksMenu(url, title):
         # try:
         # Video site
         videotitle = item.xpath("./text()")[0]
+        Log(videotitle)
         # Video link
         link = item.xpath("./@href")[0]
         if not link.startswith("http:"):
