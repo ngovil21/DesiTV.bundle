@@ -184,7 +184,8 @@ def EpisodeLinksMenu(url, title, index):
 def GetURLSource(url, referer, date=''):
   html = HTML.ElementFromURL(url=url, headers={'Referer': referer})
   string = HTML.StringFromElement(html)
-
+  host = ''
+  poster = ''
   #Log(string)
   if string.find('dailymotion') != -1:
     url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
