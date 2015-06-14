@@ -94,7 +94,7 @@ def EpisodesMenu(url, title):
             title = item.xpath("./../../div[1]/text()")[0]
             if not link.startswith("http:"):
                 link = SITEURL + link
-        except as e:
+        except Exception as e:
             Log("%s" % e)
 
         # Add the found item to the collection
