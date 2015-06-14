@@ -98,7 +98,7 @@ def EpisodesMenu(url, title):
             Log("%s" % e)
 
         # Add the found item to the collection
-        oc.add(PopupDirectoryObject(key=Callback(PlayerLinksMenu, url=link, title=episode), title=episode))
+        oc.add(PopupDirectoryObject(key=Callback(PlayerLinksMenu, url=link, title=title), title=title))
 
     # If there are no channels, warn the user
     if len(oc) == 0:
