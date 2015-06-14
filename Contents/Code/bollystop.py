@@ -109,8 +109,9 @@ def EpisodesMenu(url, title):
 
 @route(PREFIX + '/bollystop/playerlinksmenu')
 def PlayerLinksMenu(url, title):
+
     oc = ObjectContainer(title2=title)
-    html = HTML.ElementFromURL(url)
+    html = HTML.ElementFromURL(url, timeout=10)
 
     sites = html.xpath("//div[@id='serial_episodes']/h3")
     # Add the item to the collection
