@@ -158,14 +158,12 @@ def EpisodeLinksMenu(url, title):
             # Log ('Dailymotion Link: ' + link)
             oc.add(VideoClipObject(
                 url=link,
-                title=videotitle,
-                thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON))
+                title=videotitle
             ))
         elif host == 'playwire':
             oc.add(CreateVideoObject(
                 url=link,
-                title=videotitle,
-                thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON))
+                title=videotitle
             ))
 
     # If there are no channels, warn the user
