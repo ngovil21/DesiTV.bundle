@@ -192,7 +192,7 @@ def GetURLSource(url, referer, date=''):
       Log("JSON: " + str(json_obj))
       import json
       Log(json.dumps(json_obj,indent=4))
-      manifest = json['media']['f4m']
+      manifest = json_obj['media']['f4m']
       #Log("Manifest: " + str(manifest))
       content = HTTP.Request(manifest, headers = {'Accept': 'text/html'}).content
       content = content.replace('\n','').replace('  ','')
