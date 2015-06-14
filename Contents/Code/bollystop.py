@@ -110,7 +110,6 @@ def EpisodesMenu(url, title):
 @route(PREFIX + '/bollystop/playerlinksmenu')
 def PlayerLinksMenu(url, title):
     oc = ObjectContainer(title2=title)
-    Log(url)
     html = HTML.ElementFromURL(url)
 
     sites = html.xpath("//div[@id='serial_episodes']/h3")
