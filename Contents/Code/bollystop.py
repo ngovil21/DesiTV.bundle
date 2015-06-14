@@ -117,7 +117,7 @@ def PlayerLinksMenu(url, title):
     # Add the item to the collection
     for item in sites:
         type = item.xpath("./text()")[0]
-        index = item.xpath("./position()")
+        index = item.xpath("count(./preceding-sibling::h3)")[0]
         Log(str(index))
         oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, index=index), title=type))
 
