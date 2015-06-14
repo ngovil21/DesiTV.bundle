@@ -124,6 +124,80 @@ def PlayerLinksMenu(url, title):
     if len(oc) == 0:
         return ObjectContainer(header=title, message=L('PlayerWarning'))
 
-def EpisodeLinksMenu(url, title):
-    return
+@route(PREFIX + '/bollystop/episodelinksmenu')
+def EpisodeLinksMenu(url, title, index):
+    oc = ObjectContainer(title2=title)
 
+    html = HTML.ElementFromURL(url)
+
+    items = html.xpath(".//*[@id='centercol']/table[" + str(index) + "]/tbody/tr/td/a")
+
+    for item in items:
+        try:
+            # Video site
+            # videosite = item.xpath("./text()")[0]
+            # Video link
+            link = item.xpath("./@href")[0]
+            # Show date
+            # date = GetShowDate(videosite)
+            # Get video source url and thumb
+            link = GetURLSource(link, url)
+        except:
+            continue
+
+        # Add the found item to the collection
+        if link.find('dailymotion') != -1:
+            # Log ('Dailymotion Link: ' + link)
+            oc.add(VideoClipObject(
+                url=link,
+                title=videosite,
+                thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
+                originally_available_at=Datetime.ParseDate(date).date()))
+        elif link.find('playwire') != -1:
+            oc.add(CreateVideoObject(
+                url=link,
+                title=videosite,
+                thumb=Resource.ContentsOfURLWithFallback(R(ICON), fallback=R(ICON)),
+                originally_available_at=Datetime.ParseDate(date).date()))
+
+    # If there are no channels, warn the user
+    if len(oc) == 0:
+        return ObjectContainer(header=title, message=L('SourceWarning'))
+
+    return oc
+
+
+def GetURLSource(url, referer, date=''):
+  html = HTML.ElementFromURL(url=url, headers={'Referer': referer})
+  string = HTML.StringFromElement(html)
+
+  if string.find('dailymotion') != -1:
+    url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
+  elif string.find('playwire') != -1:
+    #Log("pID: " + str(len(html.xpath("//script/@data-publisher-id"))) + " vID: " + str(len(html.xpath("//script/@data-video-id"))))
+    if len(html.xpath("//script/@data-publisher-id")) != 0 and len(html.xpath("//script/@data-video-id")) != 0:
+      url = 'http://cdn.playwire.com/' + html.xpath("//script/@data-publisher-id")[0] + '/video-' + date + '-' + html.xpath("//script/@data-video-id")[0] + '.mp4'
+    else:
+      #Log("JSON: " + str(html.xpath("//script/@data-config")))
+      json = JSON.ObjectFromURL(html.xpath("//script/@data-config")[0])
+      #Log("JSON: " + str(json))
+      manifest = json['src']
+      #Log("Manifest: " + str(manifest))
+      content = HTTP.Request(manifest, headers = {'Accept': 'text/html'}).content
+      content = content.replace('\n','').replace('  ','')
+      #Log("Content: " + str(content))
+      baseurl = re.search(r'>http(.*?)<', content) #<([baseURL]+)\b[^>]*>(.*?)<\/baseURL>
+      #Log ('BaseURL: ' + baseurl.group())
+      baseurl = re.sub(r'(<|>)', "", baseurl.group())
+      #Log ('BaseURL: ' + baseurl)
+      mediaurl = re.search(r'url="(.*?)\?', content)
+      #Log ('MediaURL: ' + mediaurl.group())
+      mediaurl = re.sub(r'(url|=|\?|")', "", mediaurl.group())
+      #Log ('MediaURL: ' + mediaurl)
+      url = baseurl + "/" + mediaurl
+      Log("URL: " + url)
+
+  # thumb = GetThumb(html)
+
+  # return url, thumb
+  return url
