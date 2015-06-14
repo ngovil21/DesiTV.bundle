@@ -35,7 +35,7 @@ def MainMenu():
   oc.add(DirectoryObject(key=Callback(desitvforum.TypeMenu, url=desitvforum.SITEURL), title=desitvforum.SITETITLE, thumb=R(desitvforum.SITETHUMB)))
   oc.add(DirectoryObject(key=Callback(desitvbox.ChannelsMenu, url=desitvbox.SITEURL), title=desitvbox.SITETITLE, thumb=R(desitvbox.SITETHUMB)))
   oc.add(DirectoryObject(key=Callback(einthusan.LanguagesMenu, url=einthusan.SITEURL), title=einthusan.SITETITLE, thumb=R(einthusan.SITETHUMB)))
-  oc.add(DirectoryObject(key=Callback(bollystop.Channel, url=bollystop.SITEURL), title=bollystop.SITETITLE, thumb=R(bollystop.SITETHUMB)))
+  oc.add(DirectoryObject(key=Callback(bollystop.ChannelsMenu, url=bollystop.SITEURL), title=bollystop.SITETITLE, thumb=R(bollystop.SITETHUMB)))
 
   oc.add(DirectoryObject(key=Callback(test.TestMenu, url=test.TEST_URL), title="Test"))
 
