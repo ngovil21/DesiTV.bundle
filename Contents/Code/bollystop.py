@@ -70,3 +70,31 @@ def ShowsMenu(url, title):
 
 
 ####################################################################################################
+
+@route(PREFIX + '/bollystop/episodesmenu')
+def EpisodesMenu(url, title):
+    oc = ObjectContainer(title2=title)
+
+    html = HTML.ElementFromURL(url)
+
+    for item in html.xpath("//div[@id='left-inside']/div/h2[@class='titles']/a"):
+        try:
+            # Episode title
+            episode = item.xpath("./text()")[0]
+            if "written" in episode.lower():
+                continue
+            # episode link
+            link = item.xpath("./@href")[0]
+            if not link.startswith("http:"):
+                link = SITEURL + link
+        except:
+            continue
+
+        # Add the found item to the collection
+        oc.add(PopupDirectoryObject(key=Callback(PlayerLinksMenu, url=link, title=episode), title=episode))
+
+    # If there are no channels, warn the user
+    if len(oc) == 0:
+        return ObjectContainer(header=title, message=L('EpisodeWarning'))
+
+    return oc
