@@ -91,7 +91,7 @@ def EpisodesMenu(url, title):
         try:
             # Episode link
             link = item.xpath("./@href)")[0]
-            title = item.xpath("./../div[1]/text()")[0]
+            title = item.xpath("./../../div[1]/text()")[0]
             if not link.startswith("http:"):
                 link = SITEURL + link
         except:
