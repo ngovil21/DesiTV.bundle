@@ -144,7 +144,7 @@ def EpisodeLinksMenu(url, title):
             link = SITEURL + link
         Log(link)
         match = re.compile('redirector.php\?r=(.+?)&s=(.+?)').search(link)
-        redirect = match.group(0)
+        redirect = match.group(1)
         Log(redirect)
         # Show date
         # date = GetShowDate(videosite)
