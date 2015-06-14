@@ -130,7 +130,7 @@ def EpisodeLinksMenu(url, title):
 
     html = HTML.ElementFromURL(url)
 
-    items = html.xpath(".//*[@id='centercol']/table[" + str(index) + "]/tbody/tr/td/a")
+    items = html.xpath(".//*[@id='serial_episodes']/h3[contains(text(),'" + title + "']/following-sibling::div[1]/div//a")
 
     for item in items:
         try:
