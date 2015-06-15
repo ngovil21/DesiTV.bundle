@@ -174,10 +174,11 @@ def EpisodeLinksMenu(url, title, index):
                 urls=parts
             ))
         elif host == 'vodlocker':
-            oc.add(VideoClipObject(
+            oc.add(CreateVideoObject(
                 url=link,
                 title=videotitle,
-                thumb=thumb
+                thumb=thumb,
+                urls=parts
             ))
 
     # If there are no channels, warn the user
@@ -229,6 +230,16 @@ def GetURLSource(url, referer, date=''):
             thumb = poster
     elif string.find('vodlocker') != -1:
         url = html.xpath("//iframe[contains(@src,'vodlocker')]/@src")[0]
+        site = HTML.ElementFromURL(url)
+        source = HTML.StringFromElement(site)
+        source = source.replace('|', '/')
+        file = re.compile('file: "([^"]+)"').findall(string)
+        image = re.compile('image: "([^"]+)"').findall(string)
+        if file:
+            url = file[0]
+            poster = image[0]
+        else:
+            return None,None,None
         host = 'vodlocker'
         thumb = None
 
