@@ -118,7 +118,7 @@ def PlayerLinksMenu(url, title):
     for item in sites:
         type = item.xpath("./text()")[0]
         index = int(item.xpath("count(./preceding-sibling::h3)") + 1)
-        Log(str(index))
+        #Log(str(index))
         oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, index=index), title=type))
 
     # If there are no channels, warn the user
@@ -141,12 +141,12 @@ def EpisodeLinksMenu(url, title, index):
         # try:
         # Video site
         videotitle = item.xpath("./text()")[0]
-        Log(videotitle)
+        #Log(videotitle)
         # Video link
         link = item.xpath("./@href")[0]
         if not link.startswith("http:"):
             link = SITEURL + link
-        Log(link)
+        #Log(link)
         match = re.compile('redirector.php\?r=(.+?)&s=(.+?)').search(link)
         redirect = match.group(1)
         # Log(redirect)
@@ -237,6 +237,7 @@ def GetURLSource(url, referer, date=''):
         image = re.compile('image: "([^"]+)"').findall(string)
         if file:
             url = file[0]
+            Log(url)
             poster = image[0]
         else:
             return None,None,None
