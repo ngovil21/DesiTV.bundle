@@ -233,7 +233,7 @@ def GetURLSource(url, referer, date=''):
         site = HTML.ElementFromURL(url)
         source = HTML.StringFromElement(site)
         source = source.replace('|', '/')
-        file = re.compile('file: "([^"]+)""').findall(source)
+        file = re.compile('file: "([^"]+)"').findall(source)
         image = re.compile('image: "([^"]+)"').findall(source)
         if file:
             url = file[0]
