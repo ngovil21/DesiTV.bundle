@@ -164,8 +164,7 @@ def EpisodeLinksMenu(url, title, index):
             oc.add(VideoClipObject(
                 url=link,
                 title=videotitle,
-                thumb=thumb,
-                urls=parts
+                thumb=thumb
             ))
         elif host == 'playwire':
             oc.add(CreateVideoObject(
@@ -178,8 +177,7 @@ def EpisodeLinksMenu(url, title, index):
             oc.add(VideoClipObject(
                 url=link,
                 title=videotitle,
-                thumb=thumb,
-                urls=parts
+                thumb=thumb
             ))
 
     # If there are no channels, warn the user
