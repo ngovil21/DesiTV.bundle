@@ -50,6 +50,7 @@ def ChannelsMenu(url):
 
     return oc
 
+
 @route(PREFIX + '/bollystop/showsmenu')
 def ShowsMenu(url, title):
     oc = ObjectContainer(title2=title)
@@ -61,7 +62,7 @@ def ShowsMenu(url, title):
         name = show.xpath("./text()")[0]
         link = show.xpath("./@href")[0]
         link = link.replace("id/", "episodes/")
-        #Log(link)
+        # Log(link)
         image = show.xpath("./../../p//img/@src")
         if image:
             if not image[0].startswith("http:"):
@@ -109,7 +110,6 @@ def EpisodesMenu(url, title):
 
 @route(PREFIX + '/bollystop/playerlinksmenu')
 def PlayerLinksMenu(url, title):
-
     oc = ObjectContainer(title2=title)
     html = HTML.ElementFromURL(url)
 
@@ -117,7 +117,7 @@ def PlayerLinksMenu(url, title):
     # Add the item to the collection
     for item in sites:
         type = item.xpath("./text()")[0]
-        index = int(item.xpath("count(./preceding-sibling::h3)")+1)
+        index = int(item.xpath("count(./preceding-sibling::h3)") + 1)
         Log(str(index))
         oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, index=index), title=type))
 
@@ -127,15 +127,16 @@ def PlayerLinksMenu(url, title):
 
     return oc
 
+
 @route(PREFIX + '/bollystop/episodelinksmenu')
 def EpisodeLinksMenu(url, title, index):
     oc = ObjectContainer(title2=title)
 
     html = HTML.ElementFromURL(url)
 
-    items = html.xpath("//div[@id='serial_episodes']/h3["+str(index)+"]/following-sibling::div[1]/div//a")
-    #Log(HTML.StringFromElement(items[0]))
-    parts=[]
+    items = html.xpath("//div[@id='serial_episodes']/h3[" + str(index) + "]/following-sibling::div[1]/div//a")
+    # Log(HTML.StringFromElement(items[0]))
+    parts = []
     for item in items:
         # try:
         # Video site
@@ -148,7 +149,7 @@ def EpisodeLinksMenu(url, title, index):
         Log(link)
         match = re.compile('redirector.php\?r=(.+?)&s=(.+?)').search(link)
         redirect = match.group(1)
-        #Log(redirect)
+        # Log(redirect)
         # Show date
         # date = GetShowDate(videosite)
         # Get video source url and thumb
@@ -173,6 +174,13 @@ def EpisodeLinksMenu(url, title, index):
                 thumb=thumb,
                 urls=parts
             ))
+        elif host == 'vodlocker':
+            oc.add(VideoClipObject(
+                url=link,
+                title=videotitle,
+                thumb=thumb,
+                urls=parts
+            ))
 
     # If there are no channels, warn the user
     if len(oc) == 0:
@@ -182,99 +190,103 @@ def EpisodeLinksMenu(url, title, index):
 
 
 def GetURLSource(url, referer, date=''):
-  html = HTML.ElementFromURL(url=url, headers={'Referer': referer})
-  string = HTML.StringFromElement(html)
-  host = ''
-  poster = ''
-  #Log(string)
-  if string.find('dailymotion') != -1:
-    url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
-    host = 'dailymotion'
-    thumb=None
-  elif string.find('playwire') != -1:
-    #Log("pID: " + str(len(html.xpath("//script/@data-publisher-id"))) + " vID: " + str(len(html.xpath("//script/@data-video-id"))))
-    if len(html.xpath("//script/@data-publisher-id")) != 0 and len(html.xpath("//script/@data-video-id")) != 0:
-      url = 'http://cdn.playwire.com/' + html.xpath("//script/@data-publisher-id")[0] + '/video-' + date + '-' + html.xpath("//script/@data-video-id")[0] + '.mp4'
-      host = 'playwire'
-    else:
-      #Log("JSON: " + str(html.xpath("//script/@data-config")))
-      json_obj = JSON.ObjectFromURL(html.xpath("//script/@data-config")[0])
-      #Log("JSON: " + str(json_obj))
-      #import json
-      #Log(json.dumps(json_obj,indent=4))
-      manifest = json_obj['content']['media']['f4m']
-      poster = json_obj['content']['poster']
-      #Log("Manifest: " + str(manifest))
-      content = HTTP.Request(manifest, headers = {'Accept': 'text/html'}).content
-      content = content.replace('\n','').replace('  ','')
-      #Log("Content: " + str(content))
-      baseurl = re.search(r'>http(.*?)<', content) #<([baseURL]+)\b[^>]*>(.*?)<\/baseURL>
-      #Log ('BaseURL: ' + baseurl.group())
-      baseurl = re.sub(r'(<|>)', "", baseurl.group())
-      #Log ('BaseURL: ' + baseurl)
-      mediaurl = re.search(r'url="(.*?)\?', content)
-      #Log ('MediaURL: ' + mediaurl.group())
-      mediaurl = re.sub(r'(url|=|\?|")', "", mediaurl.group())
-      #Log ('MediaURL: ' + mediaurl)
-      url = baseurl + "/" + mediaurl
-      host = 'playwire'
-      Log("URL: " + url)
-      thumb = poster
+    html = HTML.ElementFromURL(url=url, headers={'Referer': referer})
+    string = HTML.StringFromElement(html)
+    host = ''
+    poster = ''
+    # Log(string)
+    if string.find('dailymotion') != -1:
+        url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
+        host = 'dailymotion'
+        thumb = None
+    elif string.find('playwire') != -1:
+        # Log("pID: " + str(len(html.xpath("//script/@data-publisher-id"))) + " vID: " + str(len(html.xpath("//script/@data-video-id"))))
+        if len(html.xpath("//script/@data-publisher-id")) != 0 and len(html.xpath("//script/@data-video-id")) != 0:
+            url = 'http://cdn.playwire.com/' + html.xpath("//script/@data-publisher-id")[0] + '/video-' + date + '-' + \
+                  html.xpath("//script/@data-video-id")[0] + '.mp4'
+            host = 'playwire'
+        else:
+            # Log("JSON: " + str(html.xpath("//script/@data-config")))
+            json_obj = JSON.ObjectFromURL(html.xpath("//script/@data-config")[0])
+            # Log("JSON: " + str(json_obj))
+            # import json
+            # Log(json.dumps(json_obj,indent=4))
+            manifest = json_obj['content']['media']['f4m']
+            poster = json_obj['content']['poster']
+            # Log("Manifest: " + str(manifest))
+            content = HTTP.Request(manifest, headers={'Accept': 'text/html'}).content
+            content = content.replace('\n', '').replace('  ', '')
+            # Log("Content: " + str(content))
+            baseurl = re.search(r'>http(.*?)<', content)  # <([baseURL]+)\b[^>]*>(.*?)<\/baseURL>
+            # Log ('BaseURL: ' + baseurl.group())
+            baseurl = re.sub(r'(<|>)', "", baseurl.group())
+            # Log ('BaseURL: ' + baseurl)
+            mediaurl = re.search(r'url="(.*?)\?', content)
+            # Log ('MediaURL: ' + mediaurl.group())
+            mediaurl = re.sub(r'(url|=|\?|")', "", mediaurl.group())
+            # Log ('MediaURL: ' + mediaurl)
+            url = baseurl + "/" + mediaurl
+            host = 'playwire'
+            Log("URL: " + url)
+            thumb = poster
+    elif string.find('vodlocker') != -1:
+        url = html.xpath("//iframe[contains(@src,'vodlocker')]/@src")[0]
+        host = 'vodlocker'
+        thumb = None
 
-  # thumb = GetThumb(html)
-
-  # return url, thumb
-  return url, host, poster
+# return url, thumb
+return url, host, poster
 
 
 @route(PREFIX + '/bollystop/createvideoobject')
-def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at=None, include_container=False, urls=None):
-  try:
-    originally_available_at = Datetime.ParseDate(originally_available_at).date()
-  except:
-    originally_available_at = None
+def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at=None, include_container=False,
+                      urls=None):
+    try:
+        originally_available_at = Datetime.ParseDate(originally_available_at).date()
+    except:
+        originally_available_at = None
 
-  container = Container.MP4
-  video_codec = VideoCodec.H264
-  audio_codec = AudioCodec.AAC
-  audio_channels = 2
+    container = Container.MP4
+    video_codec = VideoCodec.H264
+    audio_codec = AudioCodec.AAC
+    audio_channels = 2
 
-  if urls:
-      parts = []
-      for part in urls:
-          parts.append(PartObject(key=part))
-  else:
-      parts = [
-          PartObject(key=url)
-      ]
+    if urls:
+        parts = []
+        for part in urls:
+            parts.append(PartObject(key=part))
+    else:
+        parts = [
+            PartObject(key=url)
+        ]
 
-  video_object = VideoClipObject(
-    key = Callback(
-      CreateVideoObject,
-      url=url,
-      title=title,
-      summary=summary,
-      thumb=thumb,
-      originally_available_at=originally_available_at,
-      include_container=True
-    ),
-    rating_key = url,
-    title = title,
-    summary=summary,
-    thumb=thumb,
-    originally_available_at=originally_available_at,
-    items = [
-      MediaObject(
-        parts = parts,
-        container = container,
-        video_codec = video_codec,
-        audio_codec = audio_codec,
-        audio_channels = audio_channels
-      )
-    ]
-  )
+    video_object = VideoClipObject(
+        key=Callback(
+            CreateVideoObject,
+            url=url,
+            title=title,
+            summary=summary,
+            thumb=thumb,
+            originally_available_at=originally_available_at,
+            include_container=True
+        ),
+        rating_key=url,
+        title=title,
+        summary=summary,
+        thumb=thumb,
+        originally_available_at=originally_available_at,
+        items=[
+            MediaObject(
+                parts=parts,
+                container=container,
+                video_codec=video_codec,
+                audio_codec=audio_codec,
+                audio_channels=audio_channels
+            )
+        ]
+    )
 
-  if include_container:
-    return ObjectContainer(objects=[video_object])
-  else:
-    return video_object
+    if include_container:
+        return ObjectContainer(objects=[video_object])
+    else:
+        return video_object
