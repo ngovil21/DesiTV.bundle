@@ -234,8 +234,8 @@ def GetURLSource(url, referer, date=''):
         host = 'vodlocker'
         thumb = None
 
-# return url, thumb
-return url, host, poster
+    # return url, thumb
+    return url, host, poster
 
 
 @route(PREFIX + '/bollystop/createvideoobject')
