@@ -185,7 +185,8 @@ def EpisodeLinksMenu(url, title, index):
                 url=link,
                 title=videotitle,
                 thumb=None,
-                container='flv'
+                container='flv',
+                urls=parts
             ))
 
     # If there are no channels, warn the user
