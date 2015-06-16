@@ -252,21 +252,19 @@ def GetURLSource(url, referer, date=''):
         thumb = None
     elif html.xpath("//iframe[contains(@src,'cloudy')]"):
         url = html.xpath("//iframe[contains(@src,'cloudy')]/@src")[0]
-        site = HTML.ElementFromURL(url)
-        source = HTML.StringFromElement(site)
-        file = re.compile('file:[ ]?"([^"]+)"').findall(source)
+        site = HTTP.Request(url)
+        file = re.compile('file:[ ]?"([^"]+)"').findall(site.content)
         host = 'cloudy'
         if file:
             file_id = file[0]
             Log(file_id)
-            key = re.compile('file:[ ]?"([^"]+)"').findall(source)[0]
+            key = re.compile('key:[ ]?"([^"]+)"').findall(site.content)[0]
             Log(key)
             api_call = ('http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (file_id, key)
             site = HTTP.Request(api_call)
-            source = site.read()
-            content = re.compile('url=(.+').findall(source)
+            content = re.compile('url=(.+)').findall(site.content)
             if content:
-                url = String.Unquote(content)
+                url = String.Unquote(content[0])
                 Log(url)
                 poster = None
         else:
