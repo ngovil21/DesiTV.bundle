@@ -34,115 +34,120 @@ def MediaObjectsForURL(url):
 			parts = [PartObject(key=Callback(PlayVideo, url=url))],
 		)
 	]
-	
-@route("/Plugins/Sites/Movshare/PlayVideo")
-def PlayVideo(url,title=None):
 
+def GetVideoURL(url):
 	cj = cookielib.CookieJar()
 	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-	
+
 	# Request Initial Provider page.
 	try:
-		#Log('Requesting ' + url)
+		# Log('Requesting ' + url)
 		request = urllib2.Request(url)
 		request.add_header('User-agent', USER_AGENT)
 		response = opener.open(request)
-	
-		# Read in location and content of MovShare page.	
+
+		# Read in location and content of MovShare page.
 		soup = BeautifulSoup(response.read())
-	
+
 		provider_url = response.geturl()
-		#Log(provider_url)
-					
+	# Log(provider_url)
+
 	except Exception as ex:
 		return LogProviderError("Error whilst retrieving initial provider page (" + url + ")", ex)
-	
-	
+
+
 	# See if we have a form to submit before video page...
-	form = soup.find('form', { 'id' : 'watch' })
-	
+	form = soup.find('form', {'id': 'watch'})
+
 	if (form is not None):
-	
+
 		# Submit the form to be taken to video page.
 		try:
 			# Get params to submit form with.
 			params = {}
-			for elem in form.findAll('input', {'type' : 'hidden' }):				
+			for elem in form.findAll('input', {'type': 'hidden'}):
 				params[elem['name']] = elem['value']
-			
-			#Log("Params: " + str(params))
-			#Log('Requesting ' + provider_url)
-			
+
+			# Log("Params: " + str(params))
+			# Log('Requesting ' + provider_url)
+
 			# Post to form
 			request = urllib2.Request(provider_url)
 			request.add_header('User-agent', USER_AGENT)
 			request.add_data(urllib.urlencode(params))
 			response = opener.open(request)
-	
+
 			soup = BeautifulSoup(response.read())
-			
+
 		except Exception as ex:
-			return LogProviderError("Error whilst trying to navigate from initial provider page to video page (" + url + ")", ex)
-	
-	
-	# Read in API Key info and file ID from video page. 
+			return LogProviderError(
+				"Error whilst trying to navigate from initial provider page to video page (" + url + ")", ex)
+
+
+	# Read in API Key info and file ID from video page.
 	try:
-		
+
 		contents = str(soup.contents)
-		
+
 		# Decode any WISE encoded script elements.
 		contents = wise_process(contents)
 
 		# Decode any PACKED encoded script elements.
 		contents = packed_process(contents)
-		
-		#Log(contents)
-		
+
+		# Log(contents)
+
 		api_key = re.search("flashvars\.filekey=\"?(.*?)\"?;", contents).group(1)
-		
+
 		# If key is not in right format, look for a matching var...
 		api_key_re = re.compile("\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}-[a-z0-9]{32}");
-		
+
 		while (api_key and api_key_re.match(api_key) is None):
 			api_key = re.search("var.{1,10}" + api_key + "=\"?(.*?)\"?;", contents, re.DOTALL).group(1)
-		
-		#Log("API KEY:" + api_key)
-		
+
+		# Log("API KEY:" + api_key)
+
 		file_id = re.search("flashvars\.file=\"?(.*?)\"?;", contents).group(1)
-		#Log("File ID:" + file_id)
-		
+	# Log("File ID:" + file_id)
+
 	except Exception as ex:
 		raise ex
-		return LogProviderError("Error whilst retrieving API Key and File ID. Provider may have changed page layout.", ex)
-	
+		return LogProviderError("Error whilst retrieving API Key and File ID. Provider may have changed page layout.",
+								ex)
+
 	# Get final video location from API.
 	try:
-	
+
 		# Build up and retrieve API URL
 		api_url = API_URL % (
 			urlparse.urlparse(provider_url).netloc,
 			file_id,
 			urllib.quote_plus(api_key)
 		)
-	
+
 		# Log('Requesting ' + api_url)
 		request = urllib2.Request(api_url)
 		request.add_header('User-agent', USER_AGENT)
 		response = opener.open(request)
-		
+
 		content = response.read()
 		# Log(content)
-		
+
 		# API should be HTML form encoded query string. Break it down to get elem we're
 		# interested in.
 		api_info = cgi.parse_qs(content)
-		#api_info = urllib.parse.parse_qs(content)
+		# api_info = urllib.parse.parse_qs(content)
 		final_url = api_info['url'][0]
-		
+
 	except Exception as ex:
 		return LogProviderError("Error whilst retrieving final url from API page.", ex)
-		
-	Log(final_url)
+
+	return final_url, file_id
+
+@route("/Plugins/Sites/Movshare/PlayVideo")
+def PlayVideo(url,title=None):
+
+	final_url, file_id = GetVideoURL(url)
 	
 	video_object = VideoClipObject(
         key=WebVideoURL(final_url),

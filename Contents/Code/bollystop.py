@@ -180,6 +180,13 @@ def EpisodeLinksMenu(url, title, index):
                 thumb=thumb,
                 urls=parts
             ))
+        elif host == 'cloudy':
+            oc.add(CreateVideoObject(
+                url=link,
+                title=videotitle,
+                thumb=None,
+                container='flv'
+            ))
 
     # If there are no channels, warn the user
     if len(oc) == 0:
@@ -243,20 +250,42 @@ def GetURLSource(url, referer, date=''):
             return None,None,None
         host = 'vodlocker'
         thumb = None
+    elif string.find('cloudy.ec'):
+        url = html.xpath("//iframe[contains(@src,'vodlocker')]/@src")[0]
+        site = HTML.ElementFromURL(url)
+        source = HTML.StringFromElement(site)
+        file = re.compile('file:[ ]?"([^"]+)"').findall(source)
+        host = 'cloudy'
+        if file:
+            file_id = file[0]
+            Log(file_id)
+            key = re.compile('file:[ ]?"([^"]+)"').findall(source)[0]
+            Log(key)
+            api_call = ('http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (file_id, key)
+            site = HTTP.Request(api_call)
+            source = site.read()
+            content = re.compile('url=(.+').findall(source)
+            if content:
+                url = String.Unquote(content)
+                Log(url)
+                poster = None
+        else:
+            return None, None, None
 
     # return url, thumb
     return url, host, poster
 
 
 @route(PREFIX + '/bollystop/createvideoobject')
-def CreateVideoObject(url, title, thumb=None, summary='', originally_available_at=None, include_container=False,
+def CreateVideoObject(url, title, thumb=None, summary='', container='', originally_available_at=None, include_container=False,
                       urls=None):
     try:
         originally_available_at = Datetime.ParseDate(originally_available_at).date()
     except:
         originally_available_at = None
 
-    container = Container.MP4
+    if not container:
+        container = Container.MP4
     video_codec = VideoCodec.H264
     audio_codec = AudioCodec.AAC
     audio_channels = 2
