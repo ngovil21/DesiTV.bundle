@@ -201,7 +201,7 @@ def GetURLSource(url, referer, date=''):
     host = ''
     poster = ''
     # Log(string)
-    if string.find('dailymotion') != -1:
+    if html.xpath("//iframe[contains(@src,'dailymotion')]"):
         url = html.xpath("//iframe[contains(@src,'dailymotion')]/@src")[0]
         host = 'dailymotion'
         thumb = None
@@ -235,7 +235,7 @@ def GetURLSource(url, referer, date=''):
             host = 'playwire'
             Log("URL: " + url)
             thumb = poster
-    elif string.find('vodlocker') != -1:
+    elif html.xpath("//iframe[contains(@src,'vodlocker')]"):
         url = html.xpath("//iframe[contains(@src,'vodlocker')]/@src")[0]
         site = HTML.ElementFromURL(url)
         source = HTML.StringFromElement(site)
@@ -250,8 +250,8 @@ def GetURLSource(url, referer, date=''):
             return None,None,None
         host = 'vodlocker'
         thumb = None
-    elif string.find('cloudy.ec'):
-        url = html.xpath("//iframe[contains(@src,'vodlocker')]/@src")[0]
+    elif html.xpath("//iframe[contains(@src,'cloudy')]"):
+        url = html.xpath("//iframe[contains(@src,'cloudy')]/@src")[0]
         site = HTML.ElementFromURL(url)
         source = HTML.StringFromElement(site)
         file = re.compile('file:[ ]?"([^"]+)"').findall(source)
