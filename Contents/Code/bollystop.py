@@ -257,9 +257,9 @@ def GetURLSource(url, referer, date=''):
         host = 'cloudy'
         if file:
             file_id = file[0]
-            Log(file_id)
+            #Log(file_id)
             key = re.compile('key:[ ]?"([^"]+)"').findall(site.content)[0]
-            Log(key)
+            #Log(key)
             api_call = ('http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (file_id, key)
             site = HTTP.Request(api_call)
             content = re.compile('url=([^&]+)&').findall(site.content)
