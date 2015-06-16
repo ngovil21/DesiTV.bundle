@@ -262,7 +262,7 @@ def GetURLSource(url, referer, date=''):
             Log(key)
             api_call = ('http://www.cloudy.ec/api/player.api.php?user=undefined&codes=1&file=%s&pass=undefined&key=%s') % (file_id, key)
             site = HTTP.Request(api_call)
-            content = re.compile('url=(.+)').findall(site.content)
+            content = re.compile('url=([^&]+)&').findall(site.content)
             if content:
                 url = String.Unquote(content[0])
                 Log(url)
