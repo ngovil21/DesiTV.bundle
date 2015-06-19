@@ -1,6 +1,6 @@
 import common
 import urlparse
-from Code.Hosts import Movshare
+#from Code.Hosts import Movshare
 
 PREFIX = common.PREFIX
 
