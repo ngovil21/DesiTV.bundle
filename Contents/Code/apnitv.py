@@ -119,11 +119,9 @@ def PlayerLinksMenu(url, title):
 
     sites = html.xpath("//div[@id='centerblocks']/table[@class='list']")
     # Add the item to the collection
-    Log(str(len(sites)))
     i = 1
     for item in sites:
         type = "Link " + str(i)
-        Log(type)
         oc.add(DirectoryObject(key=Callback(EpisodeLinksMenu, url=url, title=type, index=i), title=type))
         i += 1
 
