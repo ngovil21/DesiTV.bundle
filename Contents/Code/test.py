@@ -1,7 +1,6 @@
 import common
 import urlparse
-import Movshare
-import putlocker
+from Code.Hosts import Movshare
 
 PREFIX = common.PREFIX
 
@@ -29,8 +28,8 @@ def TestMenu(url):
 
   # oc.add(video)
 
-  video = putlocker.PlayVideo(url)
-  Log(video)
+  # video = putlocker.PlayVideo(url)
+  # Log(video)
 
   return oc
 

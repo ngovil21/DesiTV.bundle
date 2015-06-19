@@ -43,7 +43,7 @@ def MediaObjectsForURL(url):
 		)
 	]
 
-@route("/Plugins/Sites/Movshare/PlayVideo")
+@route("/Plugins/Sites/Vodlocker/PlayVideo")
 def PlayVideo(url,title=None):
 
     html = HTML.ElementFromURL(url)
