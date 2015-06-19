@@ -297,54 +297,53 @@ def CreateVideoObject(url, title, thumb=None, summary='', container='', original
                       include_container=False,
                       urls=None):
 
+    try:
+        originally_available_at = Datetime.ParseDate(originally_available_at).date()
+    except:
+        originally_available_at = None
 
-try:
-    originally_available_at = Datetime.ParseDate(originally_available_at).date()
-except:
-    originally_available_at = None
+    if not container:
+        container = Container.MP4
+    video_codec = VideoCodec.H264
+    audio_codec = AudioCodec.AAC
+    audio_channels = 2
 
-if not container:
-    container = Container.MP4
-video_codec = VideoCodec.H264
-audio_codec = AudioCodec.AAC
-audio_channels = 2
+    if urls:
+        parts = []
+        for part in urls:
+            parts.append(PartObject(key=part))
+    else:
+        parts = [
+            PartObject(key=url)
+        ]
 
-if urls:
-    parts = []
-    for part in urls:
-        parts.append(PartObject(key=part))
-else:
-    parts = [
-        PartObject(key=url)
-    ]
-
-video_object = VideoClipObject(
-    key=Callback(
-        CreateVideoObject,
-        url=url,
+    video_object = VideoClipObject(
+        key=Callback(
+            CreateVideoObject,
+            url=url,
+            title=title,
+            summary=summary,
+            thumb=thumb,
+            originally_available_at=originally_available_at,
+            include_container=True
+        ),
+        rating_key=url,
         title=title,
         summary=summary,
         thumb=thumb,
         originally_available_at=originally_available_at,
-        include_container=True
-    ),
-    rating_key=url,
-    title=title,
-    summary=summary,
-    thumb=thumb,
-    originally_available_at=originally_available_at,
-    items=[
-        MediaObject(
-            parts=parts,
-            container=container,
-            video_codec=video_codec,
-            audio_codec=audio_codec,
-            audio_channels=audio_channels
-        )
-    ]
-)
+        items=[
+            MediaObject(
+                parts=parts,
+                container=container,
+                video_codec=video_codec,
+                audio_codec=audio_codec,
+                audio_channels=audio_channels
+            )
+        ]
+    )
 
-if include_container:
-    return ObjectContainer(objects=[video_object])
-else:
-    return video_object
+    if include_container:
+        return ObjectContainer(objects=[video_object])
+    else:
+        return video_object
