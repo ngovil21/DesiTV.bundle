@@ -2,6 +2,7 @@ import common
 import urlparse
 import re
 import time
+import Movshare
 
 SITETITLE = "BollyStop"
 SITEURL = 'http://bollystop.com/'
@@ -268,8 +269,10 @@ def GetURLSource(url, referer, date=''):
                 url = String.Unquote(content[0])
                 Log(url)
                 poster = None
-        else:
-            return None, None, None
+    elif html.xpath("//iframe[contains(@src,'cloudy')]"):
+
+    else:
+        return None, None, None
 
     # return url, thumb
     return url, host, poster
